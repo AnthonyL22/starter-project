@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/config/${test.env}/automation.properties</value>
+                <value>classpath:/config/${test.env}/grid.properties</value>
+                <value>classpath:/config/${test.env}/database.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--JDBC Connection-->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${db.driver}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+    </bean>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--MongoDB Connection-->
+    <bean id="mongoCredentials" class="org.springframework.data.authentication.UserCredentials">
+        <constructor-arg index="0" value="${mongo.username}"/>
+        <constructor-arg index="1" value="${mongo.password}"/>
+    </bean>
+    <mongo:mongo host="${mongo.host}" port="${mongo.port}"/>
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongo" ref="mongo"/>
+        <constructor-arg name="databaseName" value="${mongo.databasename}"/>
+        <constructor-arg name="userCredentials" ref="mongoCredentials"/>
+    </bean>
+
+    <!-- Invoke all Assertion Controllers -->
+    <context:component-scan base-package="com.pwc.assertion"/>
+
+    <!-- Invoke all Controllers -->
+    <context:component-scan base-package="com.pwc.core.framework.controller"/>
+
+    <!-- Invoke all Controller Services -->
+    <context:component-scan base-package="com.pwc.core.framework.service"/>
+
+</beans>
