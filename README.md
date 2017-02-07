@@ -9,11 +9,12 @@ Starter project for new automation initiative
 
 ## Quick Start
 
-Once the prerequisites are installed and configured follow these 2 simple instructions to get your test solution
+Once the prerequisites are installed and configured follow these 3 simple instructions to get your test solution
 up and running:
 
 1. [Clone this Starter Project](https://github.com/AnthonyL22/starter-project.git)
-2. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=test* on this project
+2. Open command prompt (Unix users use sudo access if possible)
+3. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=test* on this project
 
 ### To Run in IntelliJ
 1. Open IntelliJ
