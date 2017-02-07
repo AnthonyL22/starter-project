@@ -9,13 +9,16 @@ Starter project for new automation initiative
 
 ## Quick Start
 
-Once the prerequisites are installed and configured follow these simple instructions to get your test solution
+Once the prerequisites are installed and configured follow these 2 simple instructions to get your test solution
 up and running:
 
 1. [Clone this Starter Project](https://github.com/AnthonyL22/starter-project.git)
-2. Perform *mvn clean install* on this project
-3. In IntelliJ, add default TestNG VM option of *-Dtest.env=test*
-4. Run test in Debug mode.
+2. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=test* on this project
+
+### To Run in IntelliJ
+1. Open IntelliJ
+2. Add default runtime configuration for TestNG VM option of *-Dtest.env=test*
+3. Run test in Debug mode.
 
 ### Customize To Your Application
 1. Open the *automation.properties* file, change the *web.url* property to point to your AUT
