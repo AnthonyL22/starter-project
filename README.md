@@ -5,23 +5,25 @@ Starter project for new automation initiative
 
 1. Java 1.8
 2. Maven 3.x
+3. Chrome
 
-## Source Control
+## Quick Start
 
-[GIT Project location](https://github.com)
+Once the prerequisites are installed and configured follow these simple instructions to get your test solution
+up and running:
 
-## Jenkins
+1. [Clone this Starter Project](https://github.com/AnthonyL22/starter-project.git)
+2. Perform *mvn clean install* on this project
+3. In IntelliJ, add default TestNG VM option of *-Dtest.env=test*
+4. Run test in Debug mode.
 
-[Jenkins Jobs](https://github.com)
-
-[Test Pipeline](https://github.com)
-
-## Build
-To compile and verify your project is configured correctly simply build with the following command.
-
-```
-mvn clean install
-```
+### Customize To Your Application
+1. Open the *automation.properties* file, change the *web.url* property to point to your AUT
+2. In a browser, open your AUT login or entry page.  Note a common element on this entry page.
+3. Open Constants.java; Create an interface entry such as *String LOGIN_BUTTON = "Login";*
+4. Open the MyApplicationTestCase.java class; Replace line 26 with your addition from previous Step
+5. In IntelliJ, verify you have a default TestNG VM option of *-Dtest.env=test*
+6. Run test in Debug mode.
 
 ## Configuration
 ### Assertion Handling

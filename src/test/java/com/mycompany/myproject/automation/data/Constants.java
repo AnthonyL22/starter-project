@@ -3,7 +3,6 @@ package com.mycompany.myproject.automation.data;
 public interface Constants {
 
     // Application Defaults
-    int MAX_WEB_SERVICE_EXECUTION_MS = 5000;
     String DEFAULT_USERNAME = "";
     String DEFAULT_PASSWORD = "";
 
@@ -12,8 +11,10 @@ public interface Constants {
     // HEADING Elements
 
     // INPUT Elements
+    String QUERY_INPUT = "query";
 
     // BUTTON Elements
+    String SEARCH_BUTTON = "Search";
 
     // SELECT Elements
 

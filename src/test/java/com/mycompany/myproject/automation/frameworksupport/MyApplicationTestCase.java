@@ -4,6 +4,7 @@ import com.mycompany.myproject.automation.data.Constants;
 import com.pwc.core.framework.WebTestCase;
 import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -18,8 +19,11 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     @BeforeClass(alwaysRun = true)
     public void login() {
         credentials = new Credentials(Constants.DEFAULT_USERNAME, Constants.DEFAULT_PASSWORD);
-        if (!isHeadlessMode()) {
+        if (!isHeadlessMode() && StringUtils.isNotEmpty(credentials.getUsername())
+                && StringUtils.isNotEmpty(credentials.getPassword())) {
             webAction(credentials);
+        } else {
+            webAction(Constants.QUERY_INPUT);
         }
     }
 
@@ -33,7 +37,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      * @param command BaseGetCommand command type
      */
     protected Object webServiceAction(final WebServiceCommand command) {
-        return super.webServiceAction(credentials, command, null);
+        return super.webServiceAction(command, null);
     }
 
     /**
@@ -44,9 +48,9 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      */
     protected Object webServiceAction(final WebServiceCommand command, final Object requestBody) {
         if (requestBody instanceof HashMap || requestBody instanceof List) {
-            return super.webServiceAction(credentials, command, null, requestBody);
+            return super.webServiceAction(command, null, requestBody);
         } else {
-            return super.webServiceAction(credentials, command, requestBody, null);
+            return super.webServiceAction(command, requestBody, null);
         }
     }
 
@@ -57,7 +61,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      * @param parameterMap Name-Value pair filled map of parameters to send in HTTP request
      */
     protected Object webServiceAction(final WebServiceCommand command, final HashMap<String, Object> parameterMap) {
-        return super.webServiceAction(credentials, command, null, parameterMap);
+        return super.webServiceAction(command, null, parameterMap);
     }
 
     /**
@@ -67,7 +71,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      * @return HTTP response map
      */
     protected Object httpAction(final String url) {
-        return httpAction(credentials, url);
+        return httpAction(url);
     }
 
     public boolean isHeadlessMode() {
