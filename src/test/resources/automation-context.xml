@@ -28,18 +28,6 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <!--MongoDB Connection-->
-    <bean id="mongoCredentials" class="org.springframework.data.authentication.UserCredentials">
-        <constructor-arg index="0" value="${mongo.username}"/>
-        <constructor-arg index="1" value="${mongo.password}"/>
-    </bean>
-    <mongo:mongo host="${mongo.host}" port="${mongo.port}"/>
-    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg name="mongo" ref="mongo"/>
-        <constructor-arg name="databaseName" value="${mongo.databasename}"/>
-        <constructor-arg name="userCredentials" ref="mongoCredentials"/>
-    </bean>
-
     <!-- Invoke all Assertion Controllers -->
     <context:component-scan base-package="com.pwc.assertion"/>
 
