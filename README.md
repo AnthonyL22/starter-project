@@ -1,13 +1,21 @@
-## Introduction
-Starter project for new automation initiative
+<a href="http://www.pacificwebconsulting.com/" target="_blank">
+    <img src="http://www.pacificwebconsulting.com/wp-content/uploads/2016/11/PWC_logo_sm.jpg" alt="Automated Testing Solutions"
+         title="Automated Testing Solutions" align="right" />
+</a>
 
-## Prerequisites
+Got a question?  [Email us](http://www.pacificwebconsulting.com/contact/) or reach out on [LinkedIn](https://www.linkedin.com/in/alombardo/) 
+
+# Introduction
+Starter project for new automated testing initiative.  This is a project to simply clone and start building your
+automated testing solution immediately with a few simple configurations detailed below.
+
+# Prerequisites
 
 1. Java 1.8
 2. Maven 3.x
 3. Chrome
 
-## Quick Start
+# Quick Start
 
 Once the prerequisites are installed and configured follow these 3 simple instructions to get your test solution
 up and running:
@@ -16,12 +24,12 @@ up and running:
 2. Open command prompt (Unix users use sudo access if possible)
 3. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=test* on this project
 
-### To Run in IntelliJ
+## To Run in IntelliJ
 1. Open IntelliJ
 2. Add default runtime configuration for TestNG VM option of *-Dtest.env=test*
 3. Run test in Debug mode.
 
-### Customize To Your Application
+## Customize To Your Application
 1. Open the *automation.properties* file, change the *web.url* property to point to your AUT
 2. In a browser, open your AUT login or entry page.  Note a common element on this entry page.
 3. Open Constants.java; Create an interface entry such as *String LOGIN_BUTTON = "Login";*
@@ -29,12 +37,12 @@ up and running:
 5. In IntelliJ, verify you have a default TestNG VM option of *-Dtest.env=test*
 6. Run test in Debug mode.
 
-## Configuration
-### Assertion Handling
+# Configuration
+## Assertion Handling
 * By default, all tests are run in Soft Assertions mode (test will continue executing if failure occurs)
 * You can override this setting in the automation.properties file by setting the enable.hard.assert=false
 
-### Dynamic Properties
+## Dynamic Properties
 -Dtest.user=YOUR_USERNAME
 
 -Dtest.password=YOUR_PASSWORD
@@ -51,17 +59,17 @@ up and running:
 
 -Dtest.group=YOUR_TESTNG_GROUP
 
-## Test Execution
+# Test Execution
 Executing any test requires defining the **-Dtest.env=dev,test,etc...** runtime property.  This is necessary to support executing any and all scripts
 against any environment desired.
 
-### IDE
+## IDE
 In order to execute tests in your Integrated Development Environment you must simply add a TestNG variable to tell
 the automated tests which environment to run against.
  
 In your IDE's Runtime Configuration for TestNG, simply add **-Dtest.env=ENVIRONMENT
 
-#### Run Using SauceLabs
+### Run Using SauceLabs
 If you have a SauceLabs account, define the **grid.hub.url** in your grid.properties file according to the settings
 defined in the setup instructions provided by SauceLabs.
 
@@ -79,43 +87,43 @@ Add the following section to your **settings.xml** in order to connect your loca
 </profile>
 ```
 
-### Maven
-#### Run Using SauceLabs
+## Maven
+### Run Using SauceLabs
 $ mvn clean install -Psaucelabs -PGROUP_NAME -Dtest.env=ENVIRONMENT
 
 ```
 mvn clean install -Psaucelabs -Pacceptance -Dtest.env=test
 ```
 
-#### Run Single Test
+### Run Single Test
 $ mvn clean install -Psingle -Dtest.name=TEST_CLASS_NAME -Dtest.env=ENVIRONMENT
 
 ```
 mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=test
 ```
 
-#### Run a Maven Profile of Tests
+### Run a Maven Profile of Tests
 $ mvn clean install -PGROUP_NAME -Dtest.env=ENVIRONMENT
 
 ```
 mvn clean install -Pacceptance -Dtest.env=test
 ```
 
-#### Run ANY Group of Test(s)
+### Run ANY Group of Test(s)
 $ mvn clean install -Pgroup -Dtest.group=GROUP_NAME -Dtest.env=ENVIRONMENT 
 
 ```
 mvn clean install -Pgroup -Dtest.group=webServiceTest -Dtest.env=test
 ```
 
-#### Run ANY Test(s)
+### Run ANY Test(s)
 $ mvn clean install -Pgroup -Dtest.group=GROUP_NAME -Dtest.env=ENVIRONMENT -Dtest.package=PACKAGE_NAME -Dtest.threadCount=NUMBER_OF_THREADS 
 
 ```
 mvn clean install -Pgroup -Dtest.group=webServiceTest -Dtest.env=test -Dtest.package=* -Dtest.threadCount=1
 ```
 
-#### Run Manual Tests
+### Run Manual Tests
 Executes all manual tests stubbed out ready to be automated.  The artifact of executing these tests is the Gherkin logging for the test scenario
 that can then be used as instructions to performing your manual tests.
 
