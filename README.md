@@ -1,8 +1,3 @@
-<a href="http://www.pacificwebconsulting.com/" target="_blank">
-    <img src="http://www.pacificwebconsulting.com/wp-content/uploads/2016/11/PWC_logo_sm.jpg" alt="Automated Testing Solutions"
-         title="Automated Testing Solutions" align="right" />
-</a>
-
 Got a question?  [Email us](http://www.pacificwebconsulting.com/contact/) or reach out on [LinkedIn](https://www.linkedin.com/in/alombardo/) 
 
 # Introduction
