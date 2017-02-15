@@ -4,6 +4,11 @@ Got a question?  [Email us](http://www.pacificwebconsulting.com/contact/) or rea
 Starter project for new automated testing initiative.  This is a project to simply clone and start building your
 automated testing solution immediately with a few simple configurations detailed below.
 
+# Questions and issues
+
+The [github issue tracker](https://github.com/AnthonyL22/starter-project/issues) is **_only_** for bug reports and 
+feature requests. Anything else, such as questions for help in using the library, should be [emailed to our team](http://www.pacificwebconsulting.com/contact/).  
+
 # Prerequisites
 
 1. Java 1.8
