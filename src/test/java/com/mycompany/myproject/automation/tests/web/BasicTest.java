@@ -26,7 +26,7 @@ public class BasicTest extends MyApplicationTestCase {
     public void testBasic(String searchText) {
 
         FEATURE("Feature Under Test");
-        SCENARIO("Scenario Being Tested");
+        SCENARIO("Scenario Being Tested Here");
 
         GIVEN("I have done something");
         webElementVisible(Constants.LOGO_IMAGE);
