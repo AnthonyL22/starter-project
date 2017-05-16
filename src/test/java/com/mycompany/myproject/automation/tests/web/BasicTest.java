@@ -31,8 +31,12 @@ public class BasicTest extends MyApplicationTestCase {
         WHEN("I do something");
         webAction(Constants.QUERY_INPUT, "pacificwebconsulting");
 
-        THEN("Something happens");
+        THEN("Something happens as expected");
         webAction(Constants.SEARCH_BUTTON);
+        webElementExists("core-microservice");
+
+        webAction("runner-microservice");
+        webElementTextEquals(Constants.QUERY_INPUT, "a:\"runner-microservice\"");
 
     }
 
