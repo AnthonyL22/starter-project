@@ -6,7 +6,12 @@ public interface Constants {
     String DEFAULT_USERNAME = "";
     String DEFAULT_PASSWORD = "";
 
+    // IMG Elements
+    String LOGO_IMAGE = "The Central Repository";
+
     // ANCHOR Elements
+    String CORE_ANCHOR = "core-microservice";
+    String RUNNER_ANCHOR = "runner-microservice";
 
     // HEADING Elements
 

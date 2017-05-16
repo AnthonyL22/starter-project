@@ -13,17 +13,16 @@ import java.util.List;
 
 public abstract class MyApplicationTestCase extends WebTestCase {
 
-    private Credentials credentials;
     private boolean headlessMode = false;
 
     @BeforeClass(alwaysRun = true)
     public void login() {
-        credentials = new Credentials(Constants.DEFAULT_USERNAME, Constants.DEFAULT_PASSWORD);
+        Credentials credentials = new Credentials(Constants.DEFAULT_USERNAME, Constants.DEFAULT_PASSWORD);
         if (!isHeadlessMode() && StringUtils.isNotEmpty(credentials.getUsername())
                 && StringUtils.isNotEmpty(credentials.getPassword())) {
             webAction(credentials);
         } else {
-            webAction(Constants.QUERY_INPUT);
+            webAction(Constants.LOGO_IMAGE);
         }
     }
 
