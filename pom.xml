@@ -44,7 +44,7 @@
         <core-microservice.version>2.0.16</core-microservice.version>
         <logging-microservice.version>1.0.4</logging-microservice.version>
         <assert-microservice.version>1.0.2</assert-microservice.version>
-        <runtime-microservice.version>1.0.6</runtime-microservice.version>
+        <runtime-microservice.version>1.0.7</runtime-microservice.version>
         <runner-microservice.version>1.0.2</runner-microservice.version>
 
     </properties>
