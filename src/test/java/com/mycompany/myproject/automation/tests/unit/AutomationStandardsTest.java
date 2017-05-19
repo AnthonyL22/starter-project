@@ -19,12 +19,20 @@ import static org.junit.Assert.assertEquals;
 public class AutomationStandardsTest {
 
     private static final String WEB_TEST_DIRECTORY_LOCATION = "com/mycompany/myproject/automation/tests/web";
+    private Collection<File> allFiles = new LinkedList<>();
     private Collection<File> allTestFiles = new LinkedList<>();
 
     @Before
     public void setUp() throws Exception {
         File directory = PropertiesUtils.getFileFromResources(WEB_TEST_DIRECTORY_LOCATION);
-        allTestFiles.addAll(FileUtils.listFiles(directory, new String[]{"class"}, true));
+        allFiles.addAll(FileUtils.listFiles(directory, new String[]{"class"}, true));
+
+        for (File allFile : allFiles) {
+            if (allFile.getName().contains("Test.class")) {
+                allTestFiles.add(allFile);
+            }
+        }
+
     }
 
     @After
