@@ -37,6 +37,12 @@ up and running:
 5. In IntelliJ, verify you have a default TestNG VM option of *-Dtest.env=test*
 6. Run test in Debug mode.
 
+# Encrypting Username(s) and Password(s)
+
+By default, this microservice leverages the JDK 1.8 Java Cryptographic Extension library.  Simply encrypt, your 
+username and password and add these values to your Data.DEFAULT_USER_CREDENTIALS Credentials object.  Once encrypted,
+these values can be used to log into your SUT.
+
 # Configuration
 ## Assertion Handling
 * By default, all tests are run in Soft Assertions mode (test will continue executing if failure occurs)

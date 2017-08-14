@@ -2,9 +2,8 @@ package com.mycompany.myproject.automation.data;
 
 public interface Constants {
 
-    // Application Defaults
-    String DEFAULT_USERNAME = "";
-    String DEFAULT_PASSWORD = "";
+    // Security Defaults
+    byte[] SECURITY_KEY = {0x74, 0x68, 0x69, 0x73, 0x49, 0x73, 0x41, 0x53, 0x65, 0x63, 0x72, 0x65, 0x74, 0x4b, 0x65, 0x79};
 
     // IMG Elements
     String LOGO_IMAGE = "The Central Repository";
