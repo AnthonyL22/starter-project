@@ -30,6 +30,7 @@
         <jsoup.version>1.8.2</jsoup.version>
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.21</slf4j.version>
+        <poi-ooxml.version>3.15</poi-ooxml.version>
 
         <!--Plugins Versions-->
         <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
@@ -153,6 +154,12 @@
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi-ooxml.version}</version>
         </dependency>
 
         <!-- Logging Dependencies -->
