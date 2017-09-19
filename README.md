@@ -138,3 +138,27 @@ $ mvn clean install -Pmanual -Dtest.env=ENVIRONMENT
 ```
 mvn clean install -Pmanual -Dtest.env=test
 ```
+
+# Test Samples
+
+## REST Web Service Test Sample
+A headless web service test leveraging a public REST endpoint at [Dog CEO](https://dog.ceo/) is used as a JSON service sample.  
+Simply, run the test named *BasicRestTest.java*
+
+## Browser Test Sample
+A web-based browser sample test is provided that opens a browser and tests [Maven Central](https://search.maven.org).
+Simply, run the test named *BasicTest.java*
+
+### Data Provider using Excel
+A Excel-based data provider sample is provided to keep your data extracted from your tests.  The dataProvider is easily
+used by taking 3 arguments:
+
+1. File name from an Excel file in your resources directory
+2. Sheet name from your Excel file where your data resides
+3. Total number of columns to read
+
+```
+@Test(dataProvider = "exampleExcelData", dataProviderClass = ExcelDataProvider.class)
+public void testExcelDataProvider(String firstName, String lastName, String nickName) {
+    Test info here
+```

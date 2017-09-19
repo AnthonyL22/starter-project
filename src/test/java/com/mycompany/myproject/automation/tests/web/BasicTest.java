@@ -25,7 +25,7 @@ public class BasicTest extends MyApplicationTestCase {
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
     public void testBasic() {
 
-        FEATURE("Feature Under Test");
+        FEATURE("Web-Based Feature Under Test");
         SCENARIO("Scenario Being Tested Here");
 
         GIVEN("I have done something");

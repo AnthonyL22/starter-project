@@ -4,7 +4,7 @@ import com.pwc.core.framework.FrameworkConstants;
 
 public enum WebServiceCommand implements com.pwc.core.framework.command.WebServiceCommand {
 
-    ROOT(FrameworkConstants.GET_REQUEST, "", "");
+    GET_LIST_ALL_BREEDS(FrameworkConstants.GET_REQUEST, "api/breeds", "list/all");
 
     private String requestMethodType;
     private String requestMapping;
