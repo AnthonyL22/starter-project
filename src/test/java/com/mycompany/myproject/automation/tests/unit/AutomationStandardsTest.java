@@ -4,6 +4,7 @@ import com.pwc.core.framework.util.PropertiesUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,10 +41,20 @@ public class AutomationStandardsTest {
     }
 
     @Test()
+    public void testFirstLetterCapitalizedTest() {
+
+        for (File testFile : allTestFiles) {
+            String firstLetterInClassName = testFile.getName().substring(0, 1);
+            Assert.assertTrue("Verify Test Name begins with CAPITAL for test='" + testFile.getName() + "'", StringUtils.isAllUpperCase(firstLetterInClassName));
+        }
+
+    }
+
+    @Test()
     public void testNamedCorrectlyTest() {
 
         for (File testFile : allTestFiles) {
-            assertTrue("Verify Test Naming", StringUtils.endsWith(testFile.getName(), "Test.class"));
+            Assert.assertTrue("Verify Test Naming for test='" + testFile.getName() + "'", StringUtils.endsWith(testFile.getName(), "Test.class"));
         }
 
     }
@@ -60,7 +71,7 @@ public class AutomationStandardsTest {
                 }
             }
 
-            assertEquals("Verify Test Name Not duplicated for name='" + testFile.getName() + "'", 1, numberOfTestsNamedIdentically);
+            assertEquals("Verify Test Name Not duplicated for test='" + testFile.getName() + "'", 1, numberOfTestsNamedIdentically);
         }
 
     }
