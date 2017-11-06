@@ -8,9 +8,11 @@ import com.pwc.core.framework.annotations.MaxRetryCount;
 import com.pwc.core.framework.listeners.Retry;
 import org.testng.annotations.Test;
 
+import java.util.logging.Level;
+
 import static com.pwc.logging.service.LoggerService.*;
 
-public class BasicTest extends MyApplicationTestCase {
+public class BrowserDiagnosticsTest extends MyApplicationTestCase {
 
     public static final String SEARCH_TEXT = "pacificwebconsulting";
 
@@ -22,26 +24,24 @@ public class BasicTest extends MyApplicationTestCase {
     public void afterMethod() {
     }
 
-    @Issue("STORY-777")
+    @Issue("STORY-1234")
     @MaxRetryCount(1)
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
-    public void testBasic() {
+    public void testBrowserDiagnostics() {
 
-        FEATURE("Web-Based Feature Under Test");
+        FEATURE("Web Diagnostics");
         SCENARIO("Scenario Being Tested Here");
 
         GIVEN("I have done something");
-        webElementVisible(Constants.LOGO_IMAGE);
+        webDiagnosticsConsoleContains("loaded over HTTPS");
 
         WHEN("I do something");
         webAction(Constants.QUERY_INPUT, SEARCH_TEXT);
 
         THEN("Something happens as expected");
         webAction(Constants.SEARCH_BUTTON);
-        webElementExists(Constants.CORE_ANCHOR);
-
-        webAction(Constants.RUNNER_ANCHOR);
-        webElementTextEquals(Constants.QUERY_INPUT, "a:\"runner-microservice\"");
+        webDiagnosticsConsoleLevelBelow(Level.WARNING);
+        webDiagnosticsRequestCountEquals("https://search.maven.org/solrsearch", 1);
 
     }
 
