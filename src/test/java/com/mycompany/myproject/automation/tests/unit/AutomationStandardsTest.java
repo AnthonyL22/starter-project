@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,7 +89,9 @@ public class AutomationStandardsTest {
     }
 
     @Test
-    public void testNameSameAsMethodName() throws Exception {
+    public void testNameSameAsMethodName() {
+
+        final String DELIMITER = "\u0001";
 
         for (File testFile : allTestFiles) {
 
@@ -99,13 +102,23 @@ public class AutomationStandardsTest {
             List<String> testContents = readCompiledClass(testFile);
             boolean foundMethodName = false;
             for (String testContent : testContents) {
-                if (testContent.contains(expectedMethodName)) {
-                    foundMethodName = true;
-                    break;
+                if (StringUtils.contains(testContent, expectedMethodName)) {
+                    List<String> methodContents = Arrays.asList(StringUtils.split(testContent, DELIMITER));
+                    for (String methodContent : methodContents) {
+                        if (StringUtils.containsIgnoreCase(methodContent, expectedMethodName)) {
+                            String actualMethodName = "test" + StringUtils.substringAfter(methodContent, "test");
+                            if (StringUtils.equalsIgnoreCase(expectedMethodName, actualMethodName)) {
+                                foundMethodName = true;
+                                break;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
-            assertTrue("Test method name matches and adheres to naming standards of class name for test='" + testFile.getName() + "'", foundMethodName);
+            Assert.assertTrue("Test method name matches and adheres to naming standards of class name for test='" + testFile.getName() + "'", foundMethodName);
 
         }
 
