@@ -6,5 +6,6 @@ public interface Groups {
     String IN_PROGRESS_TEST = "inProgressTest";
     String ACCEPTANCE_TEST = "acceptanceTest";
     String REGRESSION_TEST = "regressionTest";
+    String REAL_TEST = "aiTest";
 
 }

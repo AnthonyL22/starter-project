@@ -1,4 +1,4 @@
-package com.mycompany.myproject.automation.tests.web;
+package com.mycompany.myproject.automation.tests.web.deep;
 
 import com.mycompany.myproject.automation.data.Constants;
 import com.mycompany.myproject.automation.frameworksupport.Groups;
@@ -10,7 +10,11 @@ import org.testng.annotations.Test;
 
 import java.util.logging.Level;
 
-import static com.pwc.logging.service.LoggerService.*;
+import static com.pwc.logging.service.LoggerService.FEATURE;
+import static com.pwc.logging.service.LoggerService.GIVEN;
+import static com.pwc.logging.service.LoggerService.SCENARIO;
+import static com.pwc.logging.service.LoggerService.THEN;
+import static com.pwc.logging.service.LoggerService.WHEN;
 
 public class BrowserDiagnosticsTest extends MyApplicationTestCase {
 
