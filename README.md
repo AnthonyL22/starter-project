@@ -145,9 +145,18 @@ mvn clean install -Pmanual -Dtest.env=test
 A headless web service test leveraging a public REST endpoint at [Dog CEO](https://dog.ceo/) is used as a JSON service sample.  
 Simply, run the test named *BasicRestTest.java*
 
-## Browser Test Sample
+## Basic Browser Test Sample
 A web-based browser sample test is provided that opens a browser and tests [Maven Central](https://search.maven.org).
 Simply, run the test named *BasicTest.java*
+
+## Deep Dive Browser Test Sample
+A web-based browser sample test tests the Console and Network traffic during the browser test being executed.
+Simply, run the test named *BrowserDiagnosticsTest.java*
+
+## Non-Deterministic (AI based) Test Sample
+This web-based browser test makes decisions on what to test based on the probability defined in the static map included
+in the test.  Ideal if you wanted to mimic a user's random behaviours in your application.
+Simply, run the test named *PowerUserTest.java*
 
 ### Data Provider using Excel
 A Excel-based data provider sample is provided to keep your data extracted from your tests.  The dataProvider is easily
