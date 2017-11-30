@@ -20,7 +20,6 @@ public class PowerUserTest extends AIUserTestCase {
     private static Map<Integer, String> probabilityMap;
 
     static {
-
         probabilityMap = new HashMap();
         probabilityMap.put(9, "securityIntrusion");
         probabilityMap.put(5, "advancedSearch");
@@ -38,14 +37,15 @@ public class PowerUserTest extends AIUserTestCase {
     }
 
     /**
-     * Randomly decide what to do first
-     * First decision is going to be most likely so towards 10
-     * Based on that decision do something different (potentially similar but different activity)
-     * Do something else
-     * Do something else
-     * keep going a random number of times ( less than 30 seconds
-     * <p/>
-     * The more a decision is made the lower it's importance becomes.  As importance is reduced
+     * 1. Randomly decide what to do first
+     * - First decision is going to be most likely so towards 10
+     * 2. Based on that decision do something different (potentially similar but different activity)
+     * 3. Do something else
+     * 4. Do something else
+     *
+     * Continually perform random number of times ( less than 30 seconds )
+     *
+     * IMPORTANT: The more a decision is made the lower it's importance becomes.  As importance is reduced
      * than it should be avoided more often than more important decisions.
      */
 
@@ -58,7 +58,7 @@ public class PowerUserTest extends AIUserTestCase {
         WHEN("I perform these activities");
 
         THEN("I am able to perform random Maven Central functions");
-        float decision = randomPercentageInRange(9, 10);
+        float decision = randomPercentageInRange(1, 10);
         performUserActivityBasedOnADecision(probabilityMap, visit, decision);
 
         decision = randomPercentageInRange(5, 7);

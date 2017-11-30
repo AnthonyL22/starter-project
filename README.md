@@ -155,7 +155,7 @@ Simply, run the test named *BrowserDiagnosticsTest.java*
 
 ## Non-Deterministic (AI based) Test Sample
 This web-based browser test makes decisions on what to test based on the probability defined in the static map included
-in the test.  Ideal if you wanted to mimic a user's random behaviours in your application.
+in the test.  Ideal if you wanted to mimic a user's random behaviours for a given amount of time in your application.
 Simply, run the test named *PowerUserTest.java*
 
 ### Data Provider using Excel

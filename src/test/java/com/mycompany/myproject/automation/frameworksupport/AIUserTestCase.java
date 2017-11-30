@@ -14,7 +14,7 @@ import static com.pwc.logging.service.LoggerService.LOG;
 
 public abstract class AIUserTestCase extends MyApplicationTestCase {
 
-    private static final long MAXIMUM_USER_EXPERIENCE = 10000;
+    private static final long MAXIMUM_USER_EXPERIENCE = 120000;
     private static final String HIGH_LEVEL = "HIGH";
     private static final String MEDIUM_LEVEL = "MEDIUM";
     private static final String LOW_LEVEL = "LOW";
