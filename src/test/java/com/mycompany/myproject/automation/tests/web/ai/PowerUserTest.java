@@ -1,4 +1,4 @@
-package com.mycompany.myproject.automation.tests.web.real;
+package com.mycompany.myproject.automation.tests.web.ai;
 
 import com.mycompany.myproject.automation.frameworksupport.AIUserTestCase;
 import com.mycompany.myproject.automation.frameworksupport.Groups;
