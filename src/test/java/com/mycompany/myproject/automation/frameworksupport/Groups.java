@@ -7,5 +7,6 @@ public interface Groups {
     String ACCEPTANCE_TEST = "acceptanceTest";
     String REGRESSION_TEST = "regressionTest";
     String REAL_TEST = "aiTest";
+    String MACHINE_LEARNING_TEST = "machineLearningTest";
 
 }
