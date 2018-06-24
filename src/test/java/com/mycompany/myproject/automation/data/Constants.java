@@ -21,10 +21,12 @@ public final class Constants {
     public static final String CORE_ANCHOR = "core-microservice";
     public static final String RUNNER_ANCHOR = "runner-microservice";
     public static final String QUICK_STATS_ANCHOR = "QUICK STATS";
+    public static final String ADVANCED_SEARCH_ANCHOR = "//a[text()='ADVANCED SEARCH']";
 
     // INPUT Elements
     public static final String QUERY_INPUT = "query";
     public static final String GROUP_ID_INPUT = "groupId";
+    public static final String PACKAGING_INPUT = "packaging";
 
     // BUTTON Elements
     public static final String SEARCH_BUTTON = "Search";
