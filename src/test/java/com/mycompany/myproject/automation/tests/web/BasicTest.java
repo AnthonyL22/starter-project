@@ -7,8 +7,6 @@ import com.pwc.core.framework.JavascriptConstants;
 import com.pwc.core.framework.annotations.Issue;
 import com.pwc.core.framework.annotations.MaxRetryCount;
 import com.pwc.core.framework.listeners.Retry;
-import com.pwc.core.framework.processors.web.MouseActivityProcessor;
-import org.springframework.util.StopWatch;
 import org.testng.annotations.Test;
 
 import static com.pwc.logging.service.LoggerService.FEATURE;
@@ -19,7 +17,7 @@ import static com.pwc.logging.service.LoggerService.WHEN;
 
 public class BasicTest extends MyApplicationTestCase {
 
-    public static final String SEARCH_TEXT = "pacificwebconsulting";
+    private static final String SEARCH_TEXT = "pacificwebconsulting";
 
     @Override
     public void beforeMethod() {
