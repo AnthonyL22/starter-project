@@ -3,6 +3,7 @@ package com.mycompany.myproject.automation.tests.web;
 import com.mycompany.myproject.automation.data.Constants;
 import com.mycompany.myproject.automation.frameworksupport.Groups;
 import com.mycompany.myproject.automation.frameworksupport.MyApplicationTestCase;
+import com.pwc.core.framework.JavascriptConstants;
 import com.pwc.core.framework.annotations.Issue;
 import com.pwc.core.framework.annotations.MaxRetryCount;
 import com.pwc.core.framework.listeners.Retry;
@@ -16,7 +17,7 @@ import static com.pwc.logging.service.LoggerService.WHEN;
 
 public class BasicTest extends MyApplicationTestCase {
 
-    public static final String SEARCH_TEXT = "pacificwebconsulting";
+    private static final String SEARCH_TEXT = "pacificwebconsulting";
 
     @Override
     public void beforeMethod() {
@@ -27,7 +28,7 @@ public class BasicTest extends MyApplicationTestCase {
     }
 
     @Issue("STORY-777")
-    @MaxRetryCount(1)
+    @MaxRetryCount(5)
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
     public void testBasic() {
 
@@ -46,6 +47,12 @@ public class BasicTest extends MyApplicationTestCase {
 
         webAction(Constants.RUNNER_ANCHOR);
         webElementTextEquals(Constants.QUERY_INPUT, "a:\"runner-microservice\"");
+
+        webAction(Constants.ADVANCED_SEARCH_ANCHOR);
+        webElementTextEquals(Constants.PACKAGING_INPUT, "");
+
+        executeJavascript(JavascriptConstants.CLICK_BY_XPATH, Constants.ADVANCED_SEARCH_ANCHOR);
+        webElementTextEquals(Constants.PACKAGING_INPUT, "");
 
     }
 
