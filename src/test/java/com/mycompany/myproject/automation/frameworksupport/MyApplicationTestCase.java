@@ -39,9 +39,8 @@ public abstract class MyApplicationTestCase extends WebTestCase {
         if (!isHeadlessMode() &&
                 (getCredentials().getUsername() != null && getCredentials().getPassword() != null)) {
             webAction(getCredentials());
+            webAction(Constants.LOGO_IMAGE);
         }
-
-        webAction(Constants.LOGO_IMAGE);
 
     }
 

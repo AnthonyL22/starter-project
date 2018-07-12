@@ -29,7 +29,6 @@ public class BasicRestTest extends MyApplicationTestCase {
         setHeadlessMode(true);
     }
 
-
     @Override
     public void beforeMethod() {
     }
