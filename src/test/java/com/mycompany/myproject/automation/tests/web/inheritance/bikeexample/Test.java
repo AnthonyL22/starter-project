@@ -1,9 +1,9 @@
-package com.mycompany.myproject.automation.tests.web.inheritance;
+package com.mycompany.myproject.automation.tests.web.inheritance.bikeexample;
 
 public class Test {
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         MountainBike mountainBike = new MountainBike(20, 4, "Black");
         System.out.println(mountainBike.getSeatHeight());

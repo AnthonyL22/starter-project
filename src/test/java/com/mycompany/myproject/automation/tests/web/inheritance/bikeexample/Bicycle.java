@@ -1,4 +1,4 @@
-package com.mycompany.myproject.automation.tests.web.inheritance;
+package com.mycompany.myproject.automation.tests.web.inheritance.bikeexample;
 
 public class Bicycle {
 
