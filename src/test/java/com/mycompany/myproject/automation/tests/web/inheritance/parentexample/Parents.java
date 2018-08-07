@@ -1,10 +1,10 @@
 package com.mycompany.myproject.automation.tests.web.inheritance.parentexample;
 
-public class Grandparents {
+public class Parents {
 
     private String heritage;
 
-    public Grandparents(String whereImFrom) {
+    public Parents(String whereImFrom) {
         this.heritage = whereImFrom;
     }
 

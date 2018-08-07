@@ -1,6 +1,6 @@
 package com.mycompany.myproject.automation.tests.web.inheritance.parentexample;
 
-public class Anthony extends Grandparents {
+public class Anthony extends Parents {
 
     public int howTall;
     public String personLikes;
