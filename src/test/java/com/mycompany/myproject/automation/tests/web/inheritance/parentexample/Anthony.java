@@ -2,11 +2,11 @@ package com.mycompany.myproject.automation.tests.web.inheritance.parentexample;
 
 public class Anthony extends Parents {
 
-    public int howTall;
-    public String personLikes;
+    private int howTall;
+    private String personLikes;
 
-    public Anthony(int howTall, String likesToDo, String homeland) {
-        super(homeland);
+    public Anthony(int howTall, String likesToDo, String myHeritage) {
+        super(myHeritage);
         this.howTall = howTall;
         this.personLikes = likesToDo;
     }
