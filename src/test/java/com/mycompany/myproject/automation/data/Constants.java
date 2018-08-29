@@ -8,6 +8,9 @@ public final class Constants {
     // Application Defaults
     public static final byte[] SECURITY_KEY = {0x74, 0x68, 0x69, 0x73, 0x49, 0x73, 0x41, 0x53, 0x65, 0x63, 0x72, 0x65, 0x74, 0x4b, 0x65, 0x79};
     public static final int MAX_WEB_SERVICE_RESPONSE_TIME = 3000;
+    public static final String ENCRYPTED_SERVICE_USER_NAME_PROPERTY = "ENCRYPTED_SERVICE_USER_NAME";
+    public static final String ENCRYPTED_SERVICE_USER_PASS_PROPERTY = "ENCRYPTED_SERVICE_USER_PASSWORD";
+    public static final String LOCAL_CREDENTIALS_FILENAME = "password.properties";
 
     // URLs
     public static final String SEARCH_URL = "/#search";

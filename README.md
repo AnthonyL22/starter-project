@@ -22,11 +22,11 @@ up and running:
 
 1. [Clone this Starter Project](https://github.com/AnthonyL22/starter-project.git)
 2. Open command prompt (Unix users use sudo access if possible)
-3. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=test* on this project
+3. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=prod* on this project
 
 ## To Run in IntelliJ
 1. Open IntelliJ
-2. Add default runtime configuration for TestNG VM option of *-Dtest.env=test*
+2. Add default runtime configuration for TestNG VM option of *-Dtest.env=prod*
 3. Run test in Debug mode.
 
 ## Customize To Your Application
@@ -34,7 +34,7 @@ up and running:
 2. In a browser, open your AUT login or entry page.  Note a common element on this entry page.
 3. Open Constants.java; Create an interface entry such as *String LOGIN_BUTTON = "Login";*
 4. Open the MyApplicationTestCase.java class; Replace line 26 with your addition from previous Step
-5. In IntelliJ, verify you have a default TestNG VM option of *-Dtest.env=test*
+5. In IntelliJ, verify you have a default TestNG VM option of *-Dtest.env=prod*
 6. Run test in Debug mode.
 
 # Encrypting Username(s) and Password(s)
@@ -98,35 +98,35 @@ Add the following section to your **settings.xml** in order to connect your loca
 $ mvn clean install -Psaucelabs -PGROUP_NAME -Dtest.env=ENVIRONMENT
 
 ```
-mvn clean install -Psaucelabs -Pacceptance -Dtest.env=test
+mvn clean install -Psaucelabs -Pacceptance -Dtest.env=prod
 ```
 
 ### Run Single Test
 $ mvn clean install -Psingle -Dtest.name=TEST_CLASS_NAME -Dtest.env=ENVIRONMENT
 
 ```
-mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=test
+mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=prod
 ```
 
 ### Run a Maven Profile of Tests
 $ mvn clean install -PGROUP_NAME -Dtest.env=ENVIRONMENT
 
 ```
-mvn clean install -Pacceptance -Dtest.env=test
+mvn clean install -Pacceptance -Dtest.env=prod
 ```
 
 ### Run ANY Group of Test(s)
 $ mvn clean install -Pgroup -Dtest.group=GROUP_NAME -Dtest.env=ENVIRONMENT 
 
 ```
-mvn clean install -Pgroup -Dtest.group=webServiceTest -Dtest.env=test
+mvn clean install -Pgroup -Dtest.group=webServiceTest -Dtest.env=prod
 ```
 
 ### Run ANY Test(s)
 $ mvn clean install -Pgroup -Dtest.group=GROUP_NAME -Dtest.env=ENVIRONMENT -Dtest.package=PACKAGE_NAME -Dtest.threadCount=NUMBER_OF_THREADS 
 
 ```
-mvn clean install -Pgroup -Dtest.group=webServiceTest -Dtest.env=test -Dtest.package=* -Dtest.threadCount=1
+mvn clean install -Pgroup -Dtest.group=webServiceTest -Dtest.env=prod -Dtest.package=* -Dtest.threadCount=1
 ```
 
 ### Run Manual Tests
@@ -136,7 +136,7 @@ that can then be used as instructions to performing your manual tests.
 $ mvn clean install -Pmanual -Dtest.env=ENVIRONMENT
 
 ```
-mvn clean install -Pmanual -Dtest.env=test
+mvn clean install -Pmanual -Dtest.env=prod
 ```
 
 # Test Samples

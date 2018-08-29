@@ -1,11 +1,11 @@
 package com.mycompany.myproject.automation.frameworksupport;
 
 import com.mycompany.myproject.automation.data.Constants;
-import com.mycompany.myproject.automation.data.Data;
 import com.pwc.core.framework.FrameworkConstants;
 import com.pwc.core.framework.WebTestCase;
 import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
+import com.pwc.core.framework.util.PropertiesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 import static com.pwc.assertion.AssertService.assertFail;
@@ -32,13 +33,11 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     @BeforeClass(alwaysRun = true)
     public void login() {
 
-        if (null == getCredentials()) {
-            setCredentials(Data.DEFAULT_USER_CREDENTIALS);
+        if (credentials == null) {
+            fetchEncryptedCredentials();
         }
 
-        if (!isHeadlessMode() &&
-                (getCredentials().getUsername() != null && getCredentials().getPassword() != null)) {
-            webAction(getCredentials());
+        if (!isHeadlessMode()) {
             webAction(Constants.LOGO_IMAGE);
         }
 
@@ -58,6 +57,24 @@ public abstract class MyApplicationTestCase extends WebTestCase {
 
     @AfterClass(alwaysRun = true)
     public void logout() {
+    }
+
+    /**
+     * Generate and fetch Credentials.  Will attempt to login with Encrypted credentials first and if that fails
+     * try the none-version controlled credentials in a file in resources dir named "password.properties"
+     */
+    private void fetchEncryptedCredentials() {
+        try {
+            credentials = new Credentials(System.getenv(Constants.ENCRYPTED_SERVICE_USER_NAME_PROPERTY), System.getenv(Constants.ENCRYPTED_SERVICE_USER_PASS_PROPERTY));
+        } catch (Exception e) {
+            LOG(true, "Unable to locate Credentials for user='%s' in environment vars.", System.getenv(Constants.ENCRYPTED_SERVICE_USER_NAME_PROPERTY), e);
+        }
+
+        if (StringUtils.isEmpty(credentials.getPassword())) {
+            Properties tempProperties = PropertiesUtils.getPropertiesFromPropertyFile(Constants.LOCAL_CREDENTIALS_FILENAME);
+            credentials.setUsername(tempProperties.getProperty("service_username"));
+            credentials.setPassword(tempProperties.getProperty("service_password"));
+        }
     }
 
     /**
