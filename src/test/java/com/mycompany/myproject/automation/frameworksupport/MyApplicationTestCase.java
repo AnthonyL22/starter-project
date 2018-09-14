@@ -1,5 +1,6 @@
 package com.mycompany.myproject.automation.frameworksupport;
 
+import com.jayway.restassured.path.json.JsonPath;
 import com.mycompany.myproject.automation.data.Constants;
 import com.pwc.core.framework.FrameworkConstants;
 import com.pwc.core.framework.WebTestCase;
@@ -7,20 +8,37 @@ import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
 import com.pwc.core.framework.util.PropertiesUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import org.json.XML;
+import org.jsoup.Jsoup;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.w3c.dom.Document;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 
 import static com.pwc.assertion.AssertService.assertFail;
 import static com.pwc.logging.service.LoggerService.LOG;
@@ -108,6 +126,83 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      */
     protected Object webServiceAction(final WebServiceCommand command, final HashMap<String, Object> parameterMap) {
         return super.webServiceAction(command, null, parameterMap);
+    }
+
+    /**
+     * Get all URLs from a given sitemap file
+     *
+     * @param siteMapUrl sitemap.xml url
+     * @return complete set of URL's from given sitemap
+     */
+    protected Set<String> getURLsFromSitemap(final String siteMapUrl) {
+
+        Set<String> urlSet = new HashSet<>();
+        JsonPath jsonObject = convertXmlToJson(siteMapUrl);
+        HashMap urlSetMap = jsonObject.get("urlset");
+        List<HashMap> allURLs = (List) urlSetMap.get("url");
+        allURLs.forEach(eachUrl -> {
+            urlSet.add((String) eachUrl.get("loc"));
+        });
+        return urlSet;
+    }
+
+    /**
+     * Extract all text from the HTML page
+     *
+     * @param rawHtml raw HTML of a page
+     * @return all non-html strings found in the page
+     */
+    protected String getAllTextFromRawHtml(final String rawHtml) {
+
+        String textOnly = "";
+        try {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new StringReader(rawHtml));
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            textOnly = Jsoup.parse(sb.toString()).text();
+            return textOnly;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return textOnly;
+    }
+
+    /**
+     * Convert XML to JSON from driver version APIs
+     *
+     * @return JSON representation of XML from WEB api
+     */
+    private static JsonPath convertXmlToJson(final String baseUrl) {
+
+        JsonPath jsonObject = null;
+
+        try {
+
+            URL target = new URL(baseUrl);
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(target.openStream());
+
+            DOMSource domSource = new DOMSource(doc);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.transform(domSource, result);
+
+            JSONObject json = XML.toJSONObject(writer.toString());
+            jsonObject = new JsonPath(json.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+
     }
 
     /**
