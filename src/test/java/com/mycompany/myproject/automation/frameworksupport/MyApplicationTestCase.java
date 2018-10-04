@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import static com.pwc.assertion.AssertService.assertFail;
 import static com.pwc.logging.service.LoggerService.LOG;
@@ -274,23 +275,23 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      * Clear opt-in popups unexpectedly displayed to user
      */
     protected void clearPopup() {
-        try {
-            if (!previouslyCleared) {
-                int retry = 20;
-                if (null != webEventController) {
-                    for (int i = 0; i < retry; i++) {
-                        if (StringUtils.isNoneEmpty(getWebElementText("/div[@id='my_popup']"))) {
-                            executeJavascript(JavascriptConstants.CLICK_BY_XPATH, "/div[@id='my_popup']");
-                            previouslyCleared = true;
-                            return;
-                        }
-                        Thread.sleep(100);
-                    }
-                }
-            }
 
-        } catch (InterruptedException e) {
-            e.getMessage();
+        int RETRY_COUNT = 20;
+        if (!previouslyCleared) {
+            if (null != webEventController) {
+                IntStream.range(0, RETRY_COUNT).forEach(i -> {
+                    if (StringUtils.isNoneEmpty(getWebElementText("//div[@id='my_popup']"))) {
+                        executeJavascript(JavascriptConstants.CLICK_BY_XPATH, "//div[@id='my_popup']");
+                        previouslyCleared = true;
+                        return;
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
         }
         previouslyCleared = false;
     }
