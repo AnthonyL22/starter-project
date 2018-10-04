@@ -425,7 +425,7 @@
             </goals>
             <phase>install</phase>
             <configuration>
-              <includeArtifactIds>ipit-automation-runner</includeArtifactIds>
+              <includeArtifactIds>automation-runner</includeArtifactIds>
               <outputDirectory>${project.build.directory}/lib</outputDirectory>
             </configuration>
           </execution>
