@@ -3,6 +3,7 @@ package com.mycompany.myproject.automation.frameworksupport;
 import com.jayway.restassured.path.json.JsonPath;
 import com.mycompany.myproject.automation.data.Constants;
 import com.pwc.core.framework.FrameworkConstants;
+import com.pwc.core.framework.JavascriptConstants;
 import com.pwc.core.framework.WebTestCase;
 import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
@@ -47,6 +48,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
 
     private Credentials credentials;
     private boolean headlessMode = false;
+    private boolean previouslyCleared = false;
 
     @BeforeClass(alwaysRun = true)
     public void login() {
@@ -266,6 +268,31 @@ public abstract class MyApplicationTestCase extends WebTestCase {
             LOG(true, "Unable to get random list due to reason='%s'", e);
             return listValues;
         }
+    }
+
+    /**
+     * Clear opt-in popups unexpectedly displayed to user
+     */
+    protected void clearPopup() {
+        try {
+            if (!previouslyCleared) {
+                int retry = 20;
+                if (null != webEventController) {
+                    for (int i = 0; i < retry; i++) {
+                        if (StringUtils.isNoneEmpty(getWebElementText("/div[@id='my_popup']"))) {
+                            executeJavascript(JavascriptConstants.CLICK_BY_XPATH, "/div[@id='my_popup']");
+                            previouslyCleared = true;
+                            return;
+                        }
+                        Thread.sleep(100);
+                    }
+                }
+            }
+
+        } catch (InterruptedException e) {
+            e.getMessage();
+        }
+        previouslyCleared = false;
     }
 
     public boolean isHeadlessMode() {
