@@ -36,7 +36,7 @@ public class MyLoadTest extends MyApplicationTestCase {
 
         int readingOne = openBreedListPage();
         saveResults("LIST_BREEDS", readingOne);
-        
+
         int readingTwo = openBreedDetailsPage();
         saveResults("BREED_DETAILS", readingTwo);
 
