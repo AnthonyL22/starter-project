@@ -11,6 +11,7 @@ public final class Constants {
     public static final String ENCRYPTED_SERVICE_USER_NAME_PROPERTY = "ENCRYPTED_SERVICE_USER_NAME";
     public static final String ENCRYPTED_SERVICE_USER_PASS_PROPERTY = "ENCRYPTED_SERVICE_USER_PASSWORD";
     public static final String LOCAL_CREDENTIALS_FILENAME = "password.properties";
+    public static final String LOAD_TEST_RESULTS_DIRECTORY = "performance/";
 
     // URLs
     public static final String SEARCH_URL = "/#search";
