@@ -8,6 +8,7 @@ import com.pwc.core.framework.WebTestCase;
 import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
 import com.pwc.core.framework.util.PropertiesUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.json.XML;
@@ -66,9 +67,11 @@ public abstract class MyApplicationTestCase extends WebTestCase {
 
     @BeforeMethod(firstTimeOnly = true)
     public void preserveProduction(Method m) {
+
         if (StringUtils.containsIgnoreCase(System.getProperty(FrameworkConstants.AUTOMATION_TEST_ENVIRONMENT), "prod")) {
             Test currentTest = m.getAnnotation(Test.class);
-            if (!Arrays.asList(currentTest.groups()).contains(Groups.ACCEPTANCE_TEST) || Arrays.asList(currentTest.groups()).contains(Groups.IN_PROGRESS_TEST)) {
+            List<String> acceptableProductionGroups = Arrays.asList(Groups.ACCEPTANCE_TEST, Groups.NEURAL_NETWORK_TEST);
+            if (!CollectionUtils.containsAny(Arrays.asList(currentTest.groups()), acceptableProductionGroups)) {
                 assertFail("PREVENTING EXECUTION OF REGRESSION TEST='%s' IN PRODUCTION", m.getName());
                 tearDownClass();
                 System.exit(1);
