@@ -7,6 +7,8 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 import static com.pwc.logging.service.LoggerService.FEATURE;
 import static com.pwc.logging.service.LoggerService.GIVEN;
@@ -42,9 +44,9 @@ public class PowerUserTest extends AIUserTestCase {
      * 2. Based on that decision do something different (potentially similar but different activity)
      * 3. Do something else
      * 4. Do something else
-     *
+     * <p>
      * Continually perform random number of times ( less than 30 seconds )
-     *
+     * <p>
      * IMPORTANT: The more a decision is made the lower it's importance becomes.  As importance is reduced
      * than it should be avoided more often than more important decisions.
      */
@@ -58,17 +60,21 @@ public class PowerUserTest extends AIUserTestCase {
         WHEN("I perform these activities");
 
         THEN("I am able to perform random Maven Central functions");
-        float decision = randomPercentageInRange(1, 10);
-        performUserActivityBasedOnADecision(probabilityMap, visit, decision);
+        AtomicReference<Float> decision = new AtomicReference<>(randomPercentageInRange(1, 10));
+        IntStream.range(0, 10).forEach(i -> {
 
-        decision = randomPercentageInRange(5, 7);
-        performUserActivityBasedOnADecision(probabilityMap, visit, decision);
+            performUserActivityBasedOnADecision(probabilityMap, visit, decision.get());
 
-        decision = randomPercentageInRange(1, 4);
-        performUserActivityBasedOnADecision(probabilityMap, visit, decision);
+            decision.set(randomPercentageInRange(5, 7));
+            performUserActivityBasedOnADecision(probabilityMap, visit, decision.get());
 
-        decision = randomPercentageInRange(1, 10);
-        performUserActivityBasedOnADecision(probabilityMap, visit, decision);
+            decision.set(randomPercentageInRange(1, 4));
+            performUserActivityBasedOnADecision(probabilityMap, visit, decision.get());
+
+            decision.set(randomPercentageInRange(1, 10));
+            performUserActivityBasedOnADecision(probabilityMap, visit, decision.get());
+
+        });
 
     }
 

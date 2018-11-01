@@ -57,11 +57,16 @@ public abstract class AIUserTestCase extends MyApplicationTestCase {
      * @return pass or fail of activity
      */
     protected void performUserActivityBasedOnADecision(final Map<Integer, String> probabilities, final StopWatch visit, float decision) {
+        if (visit.isRunning()) {
+            visit.stop();
+        }
         if (visit.getTotalTimeMillis() < MAXIMUM_USER_EXPERIENCE) {
+            visit.start();
             int myDecision = calculateTheMostLikelyDecision(probabilities, decision);
             runMethodDefinedInMap(probabilities.get(myDecision));
         } else {
-            assertFail("", "");
+            LOG(true, "Test Execution Time of %s ms. has Expired", MAXIMUM_USER_EXPERIENCE);
+            tearDownClass();
         }
     }
 
