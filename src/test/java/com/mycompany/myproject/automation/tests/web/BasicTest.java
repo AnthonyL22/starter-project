@@ -9,6 +9,8 @@ import com.pwc.core.framework.annotations.MaxRetryCount;
 import com.pwc.core.framework.listeners.Retry;
 import org.testng.annotations.Test;
 
+import java.util.logging.Level;
+
 import static com.pwc.logging.service.LoggerService.FEATURE;
 import static com.pwc.logging.service.LoggerService.GIVEN;
 import static com.pwc.logging.service.LoggerService.SCENARIO;
@@ -40,6 +42,7 @@ public class BasicTest extends MyApplicationTestCase {
 
         WHEN("I do something");
         webAction(Constants.QUERY_INPUT, SEARCH_TEXT);
+        verifyConsoleRequests(Constants.SEARCH_BUTTON, Level.WARNING);
 
         THEN("Something happens as expected");
         webAction(Constants.SEARCH_BUTTON);
