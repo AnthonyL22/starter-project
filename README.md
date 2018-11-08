@@ -146,7 +146,7 @@ A headless web service test leveraging a public REST endpoint at [Dog CEO](https
 Simply, run the test named *BasicRestTest.java*
 
 ## Basic Browser Test Sample
-A web-based browser sample test is provided that opens a browser and tests [Maven Central](https://search.maven.org).
+A web-based browser sample test is provided that opens a browser and tests [Oracle](https://www.oracle.com/index.html).
 Simply, run the test named *BasicTest.java*
 
 ## Deep Dive Browser Test Sample

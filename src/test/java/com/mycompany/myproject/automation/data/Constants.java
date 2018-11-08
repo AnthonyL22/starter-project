@@ -17,23 +17,19 @@ public final class Constants {
     public static final String SEARCH_URL = "/#search";
     public static final String ADVANCED_SEARCH_URL = "/#advancedsearch";
 
-    // IMG Elements
-    public static final String LOGO_IMAGE = "The Central Repository";
-
     // ANCHOR Elements
     public static final String VARIABLE_BY_TEXT_ANCHOR = "//a[text()='%s']";
-    public static final String CORE_ANCHOR = "core-microservice";
-    public static final String RUNNER_ANCHOR = "runner-microservice";
+    public static final String JOB_SEARCH_ANCHOR = "//a[@title='Job search']";
+    public static final String LOGO_ANCHOR = "//a[@href='https://www.oracle.com']";
+    public static final String APPLY_ANCHOR = "//a[text()='Apply']";
     public static final String QUICK_STATS_ANCHOR = "QUICK STATS";
-    public static final String ADVANCED_SEARCH_ANCHOR = "//a[text()='ADVANCED SEARCH']";
 
     // INPUT Elements
-    public static final String QUERY_INPUT = "query";
+    public static final String KEYWORD_INPUT = "KEYWORD";
     public static final String GROUP_ID_INPUT = "groupId";
-    public static final String PACKAGING_INPUT = "packaging";
+    public static final String SEARCH_INPUT = "//input[@id='search']";
 
     // BUTTON Elements
-    public static final String SEARCH_BUTTON = "Search";
     public static final String COORDINATE_SEARCH_BUTTON = "gavSearchButton";
 
     // DIV Elements

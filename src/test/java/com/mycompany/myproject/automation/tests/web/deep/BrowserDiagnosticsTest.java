@@ -40,10 +40,10 @@ public class BrowserDiagnosticsTest extends MyApplicationTestCase {
         webDiagnosticsConsoleContains("loaded over HTTPS");
 
         WHEN("I do something");
-        webAction(Constants.QUERY_INPUT, SEARCH_TEXT);
+        webAction(Constants.KEYWORD_INPUT, SEARCH_TEXT);
 
         THEN("Something happens as expected");
-        webAction(Constants.SEARCH_BUTTON);
+        webAction(Constants.SEARCH_INPUT);
         webDiagnosticsConsoleLevelBelow(Level.WARNING);
         webDiagnosticsRequestCountEquals("https://search.maven.org/solrsearch", 1);
 

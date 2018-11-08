@@ -34,7 +34,7 @@ public class ExcelDataProviderTest extends MyApplicationTestCase {
         GIVEN("I have done something");
 
         WHEN("I do something");
-        webElementVisible(Constants.LOGO_IMAGE);
+        webElementVisible(Constants.LOGO_ANCHOR);
 
         THEN("Something happens as expected");
         LOG(true, "First Name = %s", firstName);

@@ -64,7 +64,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
         }
 
         if (!isHeadlessMode()) {
-            webAction(Constants.LOGO_IMAGE);
+            webAction(Constants.LOGO_ANCHOR);
         }
 
     }
