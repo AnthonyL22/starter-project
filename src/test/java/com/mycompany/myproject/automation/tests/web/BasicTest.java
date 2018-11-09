@@ -26,10 +26,10 @@ public class BasicTest extends MyApplicationTestCase {
 
     @Override
     public void afterMethod() {
+        System.out.println();
     }
 
     @Issue("STORY-777")
-    @MaxRetryCount(5)
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
     public void testBasic() {
 
@@ -43,7 +43,7 @@ public class BasicTest extends MyApplicationTestCase {
         redirect("/corporate/careers");
         webAction(Constants.JOB_SEARCH_ANCHOR);
         webAction(Constants.KEYWORD_INPUT, SEARCH_TEXT);
-        verifyConsoleRequests(Constants.KEYWORD_INPUT, Level.WARNING);
+        webDiagnosticsConsoleRequestGreaterThanOrEqual(Constants.KEYWORD_INPUT, Level.SEVERE);
 
         THEN("Something happens as expected");
         webAction(Constants.SEARCH_INPUT);

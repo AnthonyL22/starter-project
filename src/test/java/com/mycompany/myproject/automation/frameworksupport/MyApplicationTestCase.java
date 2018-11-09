@@ -8,6 +8,8 @@ import com.pwc.core.framework.WebTestCase;
 import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
 import com.pwc.core.framework.util.PropertiesUtils;
+import com.pwc.logging.helper.LoggerHelper;
+import com.pwc.logging.service.VideoLoggerService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -15,6 +17,7 @@ import org.json.XML;
 import org.jsoup.Jsoup;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
+import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -85,6 +88,20 @@ public abstract class MyApplicationTestCase extends WebTestCase {
 
     @AfterClass(alwaysRun = true)
     public void logout() {
+
+        Properties properties = PropertiesUtils.getPropertiesFromPropertyFile("config/" + System.getProperty(FrameworkConstants.AUTOMATION_TEST_ENVIRONMENT) + "/automation.properties");
+        if (Boolean.valueOf(properties.get("capture.video").toString())) {
+            String testName = LoggerHelper.getClassName(Reporter.getCurrentTestResult());
+            URL sourceFilesDirectory = getClass().getClassLoader().getResource("screenshots/" + testName);
+
+            VideoLoggerService videoLoggerService = new VideoLoggerService();
+            videoLoggerService.setWidth(500);
+            videoLoggerService.setHeight(500);
+            videoLoggerService.setFrameRate(2);
+            videoLoggerService.setSourceFilesDirectoryURL(sourceFilesDirectory.getPath());
+            videoLoggerService.setOutputMovieFileName(testName + ".mov");
+            videoLoggerService.convert();
+        }
     }
 
     /**
