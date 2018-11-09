@@ -8,6 +8,8 @@ import com.pwc.core.framework.annotations.MaxRetryCount;
 import com.pwc.core.framework.listeners.Retry;
 import org.testng.annotations.Test;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 import static com.pwc.logging.service.LoggerService.FEATURE;
@@ -18,7 +20,7 @@ import static com.pwc.logging.service.LoggerService.WHEN;
 
 public class BasicTest extends MyApplicationTestCase {
 
-    private static final String SEARCH_TEXT = "java";
+    private static final String SEARCH_TEXT = "automated test engineer";
 
     @Override
     public void beforeMethod() {
@@ -26,10 +28,10 @@ public class BasicTest extends MyApplicationTestCase {
 
     @Override
     public void afterMethod() {
-        System.out.println();
     }
 
     @Issue("STORY-777")
+    @MaxRetryCount(3)
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
     public void testBasic() {
 
@@ -39,11 +41,16 @@ public class BasicTest extends MyApplicationTestCase {
         GIVEN("I have done something");
         webElementVisible(Constants.LOGO_ANCHOR);
 
+        Set<String> consoleIgnoreSet = new HashSet<>();
+        consoleIgnoreSet.add("masymiser");
+        consoleIgnoreSet.add("adobe");
+        consoleIgnoreSet.add(".js");
+        webDiagnosticsConsoleRequestGreaterThanOrEqual(Constants.LOGO_ANCHOR, Level.SEVERE, consoleIgnoreSet);
+
         WHEN("I do something");
         redirect("/corporate/careers");
         webAction(Constants.JOB_SEARCH_ANCHOR);
         webAction(Constants.KEYWORD_INPUT, SEARCH_TEXT);
-        webDiagnosticsConsoleRequestGreaterThanOrEqual(Constants.KEYWORD_INPUT, Level.SEVERE);
 
         THEN("Something happens as expected");
         webAction(Constants.SEARCH_INPUT);

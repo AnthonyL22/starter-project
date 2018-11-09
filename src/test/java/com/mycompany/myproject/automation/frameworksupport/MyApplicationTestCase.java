@@ -60,7 +60,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     private boolean previouslyCleared = false;
 
     @BeforeClass(alwaysRun = true)
-    public void login() {
+    public void setUp() {
 
         if (credentials == null) {
             fetchEncryptedCredentials();
@@ -87,7 +87,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     @AfterClass(alwaysRun = true)
-    public void logout() {
+    public void tearDown() {
 
         Properties properties = PropertiesUtils.getPropertiesFromPropertyFile("config/" + System.getProperty(FrameworkConstants.AUTOMATION_TEST_ENVIRONMENT) + "/automation.properties");
         if (Boolean.valueOf(properties.get("capture.video").toString())) {

@@ -39,7 +39,7 @@ public class LoadTestingHarness extends Thread {
                 MyLoadTest test = new MyLoadTest();
                 test.setUpRunner();
                 test.beforeTest();
-                test.login();
+                test.setUp();
                 test.performLoad();
                 test.tearDownClass();
 
