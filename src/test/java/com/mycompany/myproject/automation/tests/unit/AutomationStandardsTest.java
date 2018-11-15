@@ -25,7 +25,7 @@ public class AutomationStandardsTest {
     private Collection<File> allTestFiles = new LinkedList<>();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         File directory = PropertiesUtils.getFileFromResources(WEB_TEST_DIRECTORY_LOCATION);
         allFiles.addAll(FileUtils.listFiles(directory, new String[] {"class"}, true));
 
@@ -38,7 +38,7 @@ public class AutomationStandardsTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
     }
 
     @Test()
