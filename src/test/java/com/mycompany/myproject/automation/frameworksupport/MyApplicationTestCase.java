@@ -7,6 +7,7 @@ import com.pwc.core.framework.JavascriptConstants;
 import com.pwc.core.framework.WebTestCase;
 import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
+import com.pwc.core.framework.util.FileUtils;
 import com.pwc.core.framework.util.PropertiesUtils;
 import com.pwc.logging.helper.LoggerHelper;
 import com.pwc.logging.service.VideoLoggerService;
@@ -33,6 +34,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -351,6 +353,29 @@ public abstract class MyApplicationTestCase extends WebTestCase {
         List<String> allRequests = super.webNetworkRequests();
         ignoreSet.forEach(ignoreIt -> allRequests.removeIf(request -> request.contains(ignoreIt)));
         return allRequests;
+    }
+
+    /**
+     * Save a performance statistic to file for later reading by an external user / Jenkins
+     *
+     * @param fileName  file to write to
+     * @param statistic statistic to store to file
+     */
+    protected void saveStatistics(String fileName, Object statistic) {
+
+        fileName = Constants.LOAD_TEST_RESULTS_DIRECTORY + fileName;
+        File stats = PropertiesUtils.getFileFromResources(fileName);
+        if (stats == null) {
+            FileUtils.createFile(fileName);
+        }
+
+        if (statistic instanceof Integer) {
+            statistic = Integer.parseInt(statistic.toString()) * 1000;
+            statistic = Float.valueOf(statistic.toString()) / 1000;
+        } else {
+            statistic = Float.valueOf(statistic.toString()) / 1000;
+        }
+        FileUtils.appendToFile(fileName, "YVALUE" + "=" + StringUtils.appendIfMissing(String.valueOf(statistic), ""));
     }
 
     /**
