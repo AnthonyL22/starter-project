@@ -1,0 +1,401 @@
+#!groovy
+node {
+
+    def saucelabsCredentialId = ""
+    def notification_recipients = "ADDHERE@pacificwebconsutling.com"
+    def jira_dashboard_url = "https://jira.com/jira/secure/Dashboard.jspa?selectPageId=777"
+    def testEnvironment
+
+    env.JAVA_HOME = "/var/lib/jenkins/tools/hudson.model.JDK/JDK1.8"
+    env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+
+    stage('Environment?') {
+
+        try {
+            timeout(time: 60, unit: 'SECONDS') {
+
+                testEnvironment = input(
+                        [
+                                message   : 'Environment Selection',
+                                ok        : 'RUN',
+                                parameters: [
+                                        choice(
+                                                name: 'testEnvironment',
+                                                choices: "none\ndev\ntest\nstage\nprod\n",
+                                                description: 'Please select a test environment to execute tests against'
+                                        )
+                                ]
+                        ]
+                )
+            }
+
+            if (testEnvironment == 'none') {
+                error("Invalid environment selection")
+            }
+
+        } catch (err) {
+            currentBuild.result = 'ABORTED - ' + err
+            error("Please restart pipeline and make selections when prompted.")
+        }
+
+        echo "TEST ENVIRONMENT NAME: ${testEnvironment}"
+
+
+    }
+
+    stage('Services Available') {
+
+        parallel(
+                "Microservice 1": {
+                    withCredentials([
+                            [$class          : 'UsernamePasswordMultiBinding',
+                             credentialsId   : 'jenkins-user-account',
+                             passwordVariable: 'ENCRYPTED_PASSWORD',
+                             usernameVariable: 'ENCRYPTED_USER']]) {
+
+                        def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON',
+                                authentication: 'jenkins-user-account',
+                                httpMode: 'GET',
+                                ignoreSslErrors: true,
+                                consoleLogResponseBody: true,
+                                url: "https:/www.pacificwebconsulting.com/api/blah",
+                                validResponseCodes: '201'
+
+                        echo "Received $response response"
+
+                    }
+                },
+                "Microservice 2": {
+                    withCredentials([
+                            [$class          : 'UsernamePasswordMultiBinding',
+                             credentialsId   : 'jenkins-user-account',
+                             passwordVariable: 'ENCRYPTED_PASSWORD',
+                             usernameVariable: 'ENCRYPTED_USER']]) {
+
+                        def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON',
+                                authentication: 'jenkins-user-account',
+                                httpMode: 'GET',
+                                ignoreSslErrors: true,
+                                consoleLogResponseBody: true,
+                                url: "https://${ENCRYPTED_USER}:${ENCRYPTED_PASSWORD}@pwc-${testEnvironment}.pacificwebconsulting.com/api/info",
+                                validResponseCodes: '201'
+
+                        echo "Received $response response"
+
+                    }
+                }
+        )
+
+    }
+
+    stage('Checkout') {
+
+        checkout([$class                           : 'GitSCM',
+                  branches                         : [[name: '*/master']],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions                       : [[$class: 'CleanCheckout']],
+                  submoduleCfg                     : [],
+                  userRemoteConfigs                : [[credentialsId: 'service-account-here', url: 'GitHub project URL here .git']]
+        ])
+
+    }
+
+    stage('Verify') {
+
+        parallel(
+                "Services Available": {
+                    echo "All services Responsive and Available?: ${doDeploy}"
+                },
+                "Environment": {
+                    echo "Running tests in '${testEnvironment}' Environment"
+                }
+        )
+
+    }
+
+    stage('Unit Tests') {
+
+        try {
+            withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                int result = sh script: "mvn install -f pom.xml", returnStatus: true
+                if (result > 0) {
+                    error("TEST FAILURE OCCURRED")
+                }
+            }
+
+        } catch (err) {
+            currentBuild.result = 'UNSTABLE - ' + err
+        }
+
+        step([
+                $class     : 'JUnitResultArchiver',
+                testResults: '**/target/surefire-reports/TEST-*.xml']
+        )
+
+    }
+
+    stage('xBrowser Tests') {
+        parallel(
+                "Chrome": {
+                    try {
+                        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-service-account',
+                                          usernameVariable: 'ENCRYPTED_USER',
+                                          passwordVariable: 'ENCRYPTED_PASSWORD']])
+                                {
+                                    sauce(saucelabsCredentialId) {
+                                        sauceconnect(useGeneratedTunnelIdentifier: true, verboseLogging: false)
+                                                {
+                                                    withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                                                        int result = sh script: "mvn install -Dskip.surefire.tests -Psingle -Dtest.name=BasicTest -Dtest.env=${testEnvironment} -Dbrowser='Chrome' -Dplatform='Windows 10' -Dbrowser.resolution='1280x1024' -f pom.xml", returnStatus: true
+                                                        if (result > 0) {
+                                                            error("TEST FAILURE OCCURRED")
+                                                        }
+                                                    }
+                                                }
+                                    }
+                                }
+                    } catch (err) {
+                        currentBuild.result = 'FAILURE - ' + err
+                    }
+
+                    step([
+                            $class     : 'JUnitResultArchiver',
+                            testResults: '**/target/failsafe-reports/TEST-*.xml']
+                    )
+
+                    step([
+                            $class: 'SauceOnDemandTestPublisher']
+                    )
+
+                },
+                "Firefox": {
+                    try {
+                        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-service-account',
+                                          usernameVariable: 'ENCRYPTED_USER',
+                                          passwordVariable: 'ENCRYPTED_PASSWORD']])
+                                {
+                                    sauce(saucelabsCredentialId) {
+                                        sauceconnect(useGeneratedTunnelIdentifier: true, verboseLogging: false)
+                                                {
+                                                    withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                                                        int result = sh script: "mvn install -Dskip.surefire.tests -Psingle -Dtest.name=BasicTest -Dtest.env=${testEnvironment} -Dbrowser='Firefox' -Dplatform='Windows 7' -Dbrowser.resolution='1280x1024' -f pom.xml", returnStatus: true
+                                                        if (result > 0) {
+                                                            error("TEST FAILURE OCCURRED")
+                                                        }
+                                                    }
+                                                }
+                                    }
+                                }
+                    } catch (err) {
+                        currentBuild.result = 'FAILURE - ' + err
+                    }
+
+                    step([
+                            $class     : 'JUnitResultArchiver',
+                            testResults: '**/target/failsafe-reports/TEST-*.xml']
+                    )
+
+                    step([
+                            $class: 'SauceOnDemandTestPublisher']
+                    )
+
+                },
+                "Microsoft Edge": {
+                    try {
+                        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-service-account',
+                                          usernameVariable: 'ENCRYPTED_USER',
+                                          passwordVariable: 'ENCRYPTED_PASSWORD']])
+                                {
+                                    sauce(saucelabsCredentialId) {
+                                        sauceconnect(useGeneratedTunnelIdentifier: true, verboseLogging: false)
+                                                {
+                                                    withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                                                        int result = sh script: "mvn install -Dskip.surefire.tests -Psingle -Dtest.name=BasicTest -Dtest.env=${testEnvironment} -Dbrowser='Edge' -Dplatform='Windows 10' -Dbrowser.resolution='1280x1024' -f pom.xml", returnStatus: true
+                                                        if (result > 0) {
+                                                            error("TEST FAILURE OCCURRED")
+                                                        }
+                                                    }
+                                                }
+                                    }
+                                }
+                    } catch (err) {
+                        currentBuild.result = 'FAILURE = ' + err
+                    }
+
+                    step([
+                            $class     : 'JUnitResultArchiver',
+                            testResults: '**/target/failsafe-reports/TEST-*.xml']
+                    )
+
+                    step([
+                            $class: 'SauceOnDemandTestPublisher']
+                    )
+
+                },
+                "Safari": {
+                    try {
+                        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-service-account',
+                                          usernameVariable: 'ENCRYPTED_USER',
+                                          passwordVariable: 'ENCRYPTED_PASSWORD']])
+                                {
+                                    sauce(saucelabsCredentialId) {
+                                        sauceconnect(useGeneratedTunnelIdentifier: true, verboseLogging: false)
+                                                {
+                                                    withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                                                        int result = sh script: "mvn install -Dskip.surefire.tests -Psingle -Dtest.name=BasicTest -Dtest.env=${testEnvironment} -Dbrowser='Safari' -Dplatform='OSX 10.11' -Dbrowser.resolution='1024x768' -f pom.xml", returnStatus: true
+                                                        if (result > 0) {
+                                                            error("TEST FAILURE OCCURRED")
+                                                        }
+                                                    }
+                                                }
+                                    }
+                                }
+                    } catch (err) {
+                        currentBuild.result = 'FAILURE = ' + err
+                    }
+
+                    step([
+                            $class     : 'JUnitResultArchiver',
+                            testResults: '**/target/failsafe-reports/TEST-*.xml']
+                    )
+
+                    step([
+                            $class: 'SauceOnDemandTestPublisher']
+                    )
+
+                }
+        )
+    }
+
+    stage('Acceptance Tests') {
+
+        parallel(
+                "Browser": {
+                    try {
+
+                        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-service-account',
+                                          usernameVariable: 'ENCRYPTED_USER',
+                                          passwordVariable: 'ENCRYPTED_PASSWORD']])
+                                {
+                                    sauce(saucelabsCredentialId) {
+                                        sauceconnect(useGeneratedTunnelIdentifier: true, verboseLogging: false)
+                                                {
+                                                    withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                                                        int result = sh script: "mvn install -Dskip.surefire.tests -Pacceptance -Dtest.env=${testEnvironment} -Dbrowser='Chrome' -Dplatform='Windows 7' -Dbrowser.resolution='1280x1024' -f pom.xml", returnStatus: true
+                                                        if (result > 0) {
+                                                            error("TEST FAILURE OCCURRED")
+                                                        }
+                                                    }
+                                                }
+                                    }
+                                }
+
+                    } catch (err) {
+                        currentBuild.result = 'FAILURE = ' + err
+                    }
+
+                    step([
+                            $class     : 'JUnitResultArchiver',
+                            testResults: '**/target/failsafe-reports/TEST-*.xml']
+                    )
+
+                    step([
+                            $class: 'SauceOnDemandTestPublisher']
+                    )
+
+                },
+                "Web Services": {
+                    try {
+
+                        withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-service-account',
+                                          usernameVariable: 'ENCRYPTED_USER',
+                                          passwordVariable: 'ENCRYPTED_PASSWORD']])
+                                {
+
+                                    withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                                        int result = sh script: "mvn install -Dskip.surefire.tests -PwebServiceAcceptance -Dtest.env=${testEnvironment} -f pom.xml", returnStatus: true
+                                        if (result > 0) {
+                                            error("TEST FAILURE OCCURRED")
+                                        }
+                                    }
+                                }
+
+                    } catch (err) {
+                        currentBuild.result = 'FAILURE - ' + err
+                    }
+
+                    step([
+                            $class     : 'JUnitResultArchiver',
+                            testResults: '**/target/failsafe-reports/TEST-*.xml']
+                    )
+
+                }
+        )
+
+    }
+
+    stage('Regression Tests') {
+
+        try {
+
+            if (testEnvironment == 'prod') {
+
+                echo "Skipping Regression Test execution in Production Environment"
+
+            } else if (testEnvironment != 'prod') {
+
+                withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-service-account',
+                                  usernameVariable: 'ENCRYPTED_USER',
+                                  passwordVariable: 'ENCRYPTED_PASSWORD']])
+                        {
+                            sauce(saucelabsCredentialId) {
+                                sauceconnect(useGeneratedTunnelIdentifier: true, verboseLogging: false)
+                                        {
+                                            withMaven(jdk: 'JDK_1.8', maven: 'Maven_3.5.0', mavenSettingsConfig: '6a7de3a5-5d21-4af6-7777-7777777') {
+                                                int result = sh script: "mvn install -Dskip.surefire.tests -Pregression -Dtest.env=${testEnvironment} -Dbrowser='Chrome' -Dplatform='Windows 7' -Dbrowser.resolution='1280x1024' -f pom.xml", returnStatus: true
+                                                if (result > 0) {
+                                                    error("TEST FAILURE OCCURRED")
+                                                }
+                                            }
+                                        }
+                            }
+
+                        }
+            }
+
+        } catch (err) {
+            currentBuild.result = 'FAILURE' + err
+        }
+
+        step([
+                $class     : 'JUnitResultArchiver',
+                testResults: '**/target/failsafe-reports/TEST-*.xml']
+        )
+
+        step([
+                $class: 'SauceOnDemandTestPublisher']
+        )
+
+    }
+
+    stage('Notify') {
+
+        try {
+
+            if (currentBuild.result == null) {
+                currentBuild.result = "SUCCESS"
+            }
+
+            mail subject: "Automation Test Results :: ${JOB_NAME} :: ${currentBuild.result}!",
+                    body: "Pipeline: ${BUILD_URL}\nEnvironment: ${testEnvironment}\nGIT Branch: ${BRANCH_NAME}\nBuild #: ${BUILD_NUMBER}\nBuild Time: ${BUILD_TIMESTAMP}\nJIRA Story Coverage: ${jira_dashboard_url}",
+                    to: notification_recipients,
+                    replyTo: notification_recipients,
+                    from: 'noreply@pacificwebconsulting.com'
+
+        } catch (err) {
+            currentBuild.result = 'UNSTABLE - ' + err
+        }
+
+    }
+
+}
