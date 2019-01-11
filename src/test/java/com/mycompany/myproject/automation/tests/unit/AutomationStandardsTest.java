@@ -164,8 +164,6 @@ public class AutomationStandardsTest {
     @Test
     public void testSystemOutPresent() {
 
-        System.out.println();
-
         for (File testFile : allTestFiles) {
 
             List<String> testContents = readCompiledClass(testFile);
