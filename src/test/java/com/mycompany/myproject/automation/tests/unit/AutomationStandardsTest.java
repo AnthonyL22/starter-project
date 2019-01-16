@@ -168,7 +168,7 @@ public class AutomationStandardsTest {
 
             List<String> testContents = readCompiledClass(testFile);
             for (String testContent : testContents) {
-                if (testContent.contains("System")) {
+                if (testContent.contains("System") && testContent.contains("out")) {
                     assertFalse("JDK Native 'System' class usages present in test='" + testFile.getName() + "'", testContent.contains("System"));
                 }
             }
@@ -184,8 +184,7 @@ public class AutomationStandardsTest {
             List<String> testContents = readCompiledClass(testFile);
             for (String testContent : testContents) {
                 if (testContent.contains("Thread") && testContent.contains("sleep")) {
-                    assertFalse("'Thread.sleep' is present in test='" + testFile.getName() + "'", testContent.contains("Thread")
-                            && testContent.contains("sleep"));
+                    assertFalse("'Thread.sleep' is present in test='" + testFile.getName() + "'", testContent.contains("Thread") && testContent.contains("sleep"));
                 }
             }
         }
