@@ -31,6 +31,15 @@ up and running:
 2. Add default runtime configuration for TestNG VM option of *-Dtest.env=prod*
 3. Run test in Debug mode.
 
+# Code Formatter
+The **mvn clean install** Maven command runs a common code formatter plugin.  This plugin ensures all code is formatted 
+with consistent industry standards. If your code is not formatted correctly simply open a terminal and execute the 
+following Maven command:
+
+```
+mvn formatter:format
+```
+
 ## Customize To Your Application
 1. Open the *automation.properties* file, change the *web.url* property to point to your AUT
 2. In a browser, open your AUT login or entry page.  Note a common element on this entry page.
