@@ -13,14 +13,8 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
-import static com.pwc.assertion.AssertService.assertEquals;
-import static com.pwc.assertion.AssertService.assertGreaterThan;
-import static com.pwc.assertion.AssertService.assertLessThanOrEqual;
-import static com.pwc.logging.service.LoggerService.FEATURE;
-import static com.pwc.logging.service.LoggerService.GIVEN;
-import static com.pwc.logging.service.LoggerService.SCENARIO;
-import static com.pwc.logging.service.LoggerService.THEN;
-import static com.pwc.logging.service.LoggerService.WHEN;
+import static com.pwc.assertion.AssertService.*;
+import static com.pwc.logging.service.LoggerService.*;
 
 public class BasicRestTest extends MyApplicationTestCase {
 

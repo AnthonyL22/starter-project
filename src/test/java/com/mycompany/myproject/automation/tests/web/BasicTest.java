@@ -12,11 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 
-import static com.pwc.logging.service.LoggerService.FEATURE;
-import static com.pwc.logging.service.LoggerService.GIVEN;
-import static com.pwc.logging.service.LoggerService.SCENARIO;
-import static com.pwc.logging.service.LoggerService.THEN;
-import static com.pwc.logging.service.LoggerService.WHEN;
+import static com.pwc.logging.service.LoggerService.*;
 
 public class BasicTest extends MyApplicationTestCase {
 

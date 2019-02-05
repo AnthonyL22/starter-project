@@ -13,7 +13,8 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.pwc.assertion.AssertService.*;
+import static com.pwc.assertion.AssertService.assertEquals;
+import static com.pwc.assertion.AssertService.assertLessThanOrEqual;
 import static com.pwc.logging.service.LoggerService.*;
 
 public class GetPowerReviewsTest extends MyApplicationTestCase {

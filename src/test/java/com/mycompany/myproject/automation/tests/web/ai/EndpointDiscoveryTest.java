@@ -9,12 +9,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.pwc.logging.service.LoggerService.AND;
-import static com.pwc.logging.service.LoggerService.FEATURE;
-import static com.pwc.logging.service.LoggerService.GIVEN;
-import static com.pwc.logging.service.LoggerService.SCENARIO;
-import static com.pwc.logging.service.LoggerService.THEN;
-import static com.pwc.logging.service.LoggerService.WHEN;
+import static com.pwc.logging.service.LoggerService.*;
 
 public class EndpointDiscoveryTest extends MachineLearningTestCase {
 

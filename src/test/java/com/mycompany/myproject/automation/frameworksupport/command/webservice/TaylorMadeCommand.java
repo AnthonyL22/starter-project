@@ -4,9 +4,8 @@ import com.pwc.core.framework.FrameworkConstants;
 
 public enum TaylorMadeCommand implements com.pwc.core.framework.command.WebServiceCommand {
 
-    POST_RECOMMENDED_START(FrameworkConstants.POST_REQUEST, "default", "CQRecomm-Start"),
-    GET_POWER_REVIEWS(FrameworkConstants.GET_REQUEST, "default", "PowerReviews-GetReviews"),
-    GET_PRODUCT_AVAILABILITY(FrameworkConstants.GET_REQUEST, "default", "Product-GetAvailability");
+    POST_RECOMMENDED_START(FrameworkConstants.POST_REQUEST, "default", "CQRecomm-Start"), GET_POWER_REVIEWS(FrameworkConstants.GET_REQUEST, "default",
+                    "PowerReviews-GetReviews"), GET_PRODUCT_AVAILABILITY(FrameworkConstants.GET_REQUEST, "default", "Product-GetAvailability");
 
     private String requestMethodType;
     private String requestMapping;
