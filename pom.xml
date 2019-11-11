@@ -40,39 +40,59 @@
     </snapshotRepository>
   </distributionManagement>
   <properties>
+    <allure-maven.version>2.10.0</allure-maven.version>
+    <allure-testng.version>2.12.1</allure-testng.version>
+    <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+    <aspectj.version>1.8.10</aspectj.version>
     <assert-microservice.version>1.0.2</assert-microservice.version>
-    <com.oracle.ojdbc6.version>12.1.0.1</com.oracle.ojdbc6.version>
+    <browserstack-local-java.version>1.0.3</browserstack-local-java.version>
+    <browserstack.version>1.0.0</browserstack.version>
+    <bson.version>2.3</bson.version>
     <commons-codec.version>1.9</commons-codec.version>
+    <commons-lang3.version>3.4</commons-lang3.version>
     <commons.io.version>2.4</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commonsdbcp2.version>2.0</commonsdbcp2.version>
-    <core-microservice.version>2.0.51</core-microservice.version>
-    <default.thread.runners>10</default.thread.runners>
+    <core-microservice.version>2.0.69</core-microservice.version>
     <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
     <format-maven-plugin.version>2.0.1</format-maven-plugin.version>
-    <jackson.json.version>2.9.7</jackson.json.version>
-    <java_code.version>1.8</java_code.version>
+    <guava.version>22.0</guava.version>
+    <jackson-dataformat-yaml.version>2.3.0</jackson-dataformat-yaml.version>
+    <jackson.version>2.8.1</jackson.version>
+    <java.version>1.8</java.version>
+    <jazzy.version>0.5.2-rtext-1.4.1-2</jazzy.version>
     <jsoup.version>1.8.2</jsoup.version>
     <log4j.version>1.2.17</log4j.version>
-    <logging-microservice.version>1.0.4</logging-microservice.version>
+    <logging-microservice.version>1.0.5</logging-microservice.version>
+    <lombok.version>1.18.4</lombok.version>
     <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>2.9</maven-dependency-plugin.version>
-    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>2.19</maven-failsafe-plugin.version>
+    <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
     <maven-resource-plugin.version>2.7</maven-resource-plugin.version>
     <maven-surefire-plugin.version>2.14</maven-surefire-plugin.version>
+    <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
+    <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
+    <mongo-java-driver.version>3.6.3</mongo-java-driver.version>
+    <mysql-connector-java.version>8.0.12</mysql-connector-java.version>
+    <ojdbc6.version>11.2.0.3</ojdbc6.version>
     <opera.version>1.5</opera.version>
     <poi-ooxml.version>3.15</poi-ooxml.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <restassured.version>2.9.0</restassured.version>
     <runner-microservice.version>1.0.2</runner-microservice.version>
-    <runtime-microservice.version>1.0.19</runtime-microservice.version>
-    <sauce-connect-plugin.version>2.1.8</sauce-connect-plugin.version>
-    <selenium.version>3.14.0</selenium.version>
+    <runners>3</runners>
+    <runtime-microservice.version>1.0.23</runtime-microservice.version>
+    <selenium.version>3.141.59</selenium.version>
     <skip.profile>true</skip.profile>
+    <skip.surefire.tests>false</skip.surefire.tests>
     <slf4j.version>1.7.21</slf4j.version>
     <sortpom-maven-plugin.version>2.6.0</sortpom-maven-plugin.version>
-    <spring.version>5.1.0.RELEASE</spring.version>
+    <spring.version>4.0.0.RELEASE</spring.version>
+    <sukgu.version>0.0.9</sukgu.version>
     <surefire.junit.version>2.18.1</surefire.junit.version>
-    <testng.version>6.9.4</testng.version>
+    <test.results.dir>failsafe-reports</test.results.dir>
+    <testng.version>6.9.8</testng.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -91,29 +111,39 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
+      <groupId>com.browserstack</groupId>
+      <artifactId>browserstack-local-java</artifactId>
+      <version>${browserstack-local-java.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.json.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>${jackson.json.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.json.version}</version>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>${jackson-dataformat-yaml.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
     </dependency>
     <dependency>
       <groupId>com.jayway.restassured</groupId>
       <artifactId>json-path</artifactId>
       <version>${restassured.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc6</artifactId>
-      <version>${com.oracle.ojdbc6.version}</version>
     </dependency>
     <dependency>
       <groupId>com.pacificwebconsulting.assertion</groupId>
@@ -160,9 +190,39 @@
       <version>${commons.lang.version}</version>
     </dependency>
     <dependency>
+      <groupId>io.github.sukgu</groupId>
+      <artifactId>automation</artifactId>
+      <version>${sukgu.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-testng</artifactId>
+      <version>${allure-testng.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql-connector-java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jazzy</groupId>
+      <artifactId>jazzy</artifactId>
+      <version>${jazzy.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>oracle</groupId>
+      <artifactId>ojdbc6</artifactId>
+      <version>${ojdbc6.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-dbcp2</artifactId>
       <version>${commonsdbcp2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons-lang3.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
@@ -174,6 +234,21 @@
       <artifactId>jsoup</artifactId>
       <version>${jsoup.version}</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>bson</artifactId>
+      <version>${bson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>${mongo-java-driver.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
@@ -231,14 +306,12 @@
       <version>${spring.version}</version>
       <scope>compile</scope>
     </dependency>
-    <!-- Spring Dependencies -->
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
       <version>${spring.version}</version>
       <scope>compile</scope>
     </dependency>
-    <!-- Third-party Test Dependencies -->
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
@@ -253,8 +326,8 @@
   </dependencies>
   <repositories>
     <repository>
-      <id>codelds</id>
-      <url>https://code.lds.org/nexus/content/groups/main-repo</url>
+      <id>public-oracle-repo</id>
+      <url>http://www.datanucleus.org/downloads/maven2/</url>
     </repository>
   </repositories>
   <build>
@@ -310,15 +383,94 @@
     </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>net.revelc.code.formatter</groupId>
-        <artifactId>formatter-maven-plugin</artifactId>
-        <version>${format-maven-plugin.version}</version>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-maven</artifactId>
+        <version>${allure-maven.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>com.browserstack</groupId>
+        <artifactId>automate-maven-plugin</artifactId>
+        <version>${browserstack.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <complianceLevel>${java.version}</complianceLevel>
+        </configuration>
         <executions>
           <execution>
             <goals>
-              <goal>validate</goal>
+              <goal>test-compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${maven.findbugs.plugin.version}</version>
+        <configuration>
+          <failOnError>true</failOnError>
+          <xmlOutput>true</xmlOutput>
+          <findbugsXmlOutputDirectory>${project.build.directory}/sonar</findbugsXmlOutputDirectory>
+          <xmlOutputDirectory>${project.build.directory}/sonar</xmlOutputDirectory>
+          <outputDirectory>${project.build.directory}/sonar</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${maven-pmd-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>pmd-validation</id>
+            <goals>
+              <goal>pmd</goal>
+              <goal>cpd</goal>
+              <goal>check</goal>
+              <goal>cpd-check</goal>
             </goals>
             <phase>verify</phase>
+            <configuration>
+              <sourceEncoding>utf-8</sourceEncoding>
+              <minimumTokens>100</minimumTokens>
+              <targetJdk>${java.version}</targetJdk>
+              <outputDirectory>${project.build.directory}/pmd</outputDirectory>
+              <targetDirectory>${project.build.directory}/pmd</targetDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven.checkstyle.plugin.version}</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>true</failsOnError>
+          <failOnViolation>true</failOnViolation>
+          <violationSeverity>warning</violationSeverity>
+          <includeTestSourceDirectory>false</includeTestSourceDirectory>
+          <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+          <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+          <outputFile>${basedir}/target/checkstyle/checkstyle-output.xml</outputFile>
+          <cacheFile>${basedir}/target/checkstyle/checkstyle-cachefile</cacheFile>
+          <excludes>**/resources/*</excludes>
+          <excludes>**/language/*</excludes>
+          <excludes>**/type/**/*</excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -326,6 +478,30 @@
         <groupId>com.github.ekryd.sortpom</groupId>
         <artifactId>sortpom-maven-plugin</artifactId>
         <version>${sortpom-maven-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+        <version>${format-maven-plugin.version}</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <compilerSource>${java.version}</compilerSource>
+          <compilerCompliance>${java.version}</compilerCompliance>
+          <compilerTargetPlatform>${java.version}</compilerTargetPlatform>
+          <configFile>${project.basedir}/eclipse-java-pwc-style.xml</configFile>
+          <excludes>
+            <exclude>**/frameworksupport/command/**/*.java</exclude>
+            <exclude>**/data/enums/**/*.java</exclude>
+            <exclude>**/data/provider/*.java</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>validate</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -353,10 +529,17 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <source>${java_code.version}</source>
-          <target>${java_code.version}</target>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
         </configuration>
         <executions>
+          <execution>
+            <id>compile-framework</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>install</phase>
+          </execution>
           <execution>
             <id>compile-tests</id>
             <goals>
@@ -366,7 +549,6 @@
           </execution>
         </executions>
       </plugin>
-      <!--Unit Test Plugin-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -374,6 +556,7 @@
         <configuration>
           <parallel>classes</parallel>
           <threadCount>4</threadCount>
+          <skipTests>${skip.surefire.tests}</skipTests>
         </configuration>
         <dependencies>
           <dependency>
@@ -411,7 +594,7 @@
             <configuration>
               <arguments>
                 <argument>com.mycompany.myproject.automation.frameworksupport.Groups</argument>
-                <argument>${project.build.testOutputDirectory}</argument>
+                <argument>${project.build.outputDirectory}</argument>
                 <argument>group.properties</argument>
               </arguments>
               <mainClass>com.pwc.core.framework.ci.ContinuousIntegrationGrouper</mainClass>

@@ -1,0 +1,188 @@
+#!groovy
+
+ALERT_VIA_EMAIL = 'anthonyl22@gamil.com'
+ALERT_VIA_SLACK = '#sample-channel'
+SLACK_TOKEN = 'xOumj1Fxdlm59bv263oFHT86'
+
+node {
+
+    def APP_KEY = '1234'
+
+    stage('Prepare') {
+        properties([
+                buildDiscarder(
+                        logRotator(
+                                artifactDaysToKeepStr: '1',
+                                artifactNumToKeepStr: '3',
+                                daysToKeepStr: '3',
+                                numToKeepStr: '3'
+                        )
+                ),
+                disableConcurrentBuilds()
+        ])
+
+    }
+
+    stage('Sample') {
+
+        def headers = "'-H' 'Skip-Validation: true' '-H' 'AppKey: ${TST_APP_KEY}'"
+        def serviceUrl = 'sample/webservice'
+        def environment = 'test'
+        def expectedResultSnippet = 'Hello'
+        def serviceDescription = 'Hello World Service'
+        executeCurlWithHeaders(environment, headers, serviceUrl, expectedResultSnippet, serviceDescription)
+
+    }
+
+}
+
+/**
+ * Run the desired CURL request that requires Headers to endpoints.
+ *
+ * @param testEnvironment environment to executeCurlWithHeaders in
+ * @param headers curl HEADERS to include
+ * @param serviceUrl API endpoint
+ * @param serviceDescription API service description to include in email alert
+ */
+private String executeCurlWithHeaders(testEnvironment, headers, serviceUrl, expectedResultSnippet, serviceDescription) {
+
+    currentBuild.result = 'SUCCESS'
+    String httpStatus = 'Unknown'
+    def urlToTest = "https://${testEnvironment}.api.sample.com/sample-api/${serviceUrl}"
+
+    try {
+
+        timeout(time: 10, unit: 'SECONDS') {
+
+            httpStatus = sh(script: "curl -LI  ${headers} \"${urlToTest}\" -o /dev/null -w '%{http_code}' -s", returnStdout: true)
+            def response = sh(script: "curl ${headers} \"${urlToTest}\"", returnStdout: true)
+
+            if (!response.contains(expectedResultSnippet)) {
+                if (Integer.parseInt(httpStatus) < 399) {
+                    httpStatus = 'Data Unavailable'
+                }
+                currentBuild.result = 'FAILURE'
+                sendEmailNotification(currentBuild.result, urlToTest, testEnvironment, serviceDescription, httpStatus)
+                echo "Service DOWN :: ${serviceDescription}'"
+                showResponse(response)
+
+            } else {
+                echo "Service UP :: ${serviceDescription}'"
+                showResponse(response)
+            }
+
+        }
+
+    } catch (err) {
+        currentBuild.result = 'UNSTABLE'
+    }
+
+    //sendSlackNotification(currentBuild.result, urlToTest, serviceDescription, httpStatus)
+}
+
+/**
+ * Print the response
+ * @param response api response
+ */
+private void showResponse(response) {
+
+    echo '------------------------RESPONSE----------------------------------'
+    echo response
+    echo '------------------------------------------------------------------'
+}
+
+/**
+ * Send an email based on runtime settings.
+ *
+ * @param currentResult current test build result
+ * @param url URL endpoint to test
+ * @param environment environment to executeCurlWithHeaders in
+ * @param description service endpoint identifier
+ * @param httpStatus response code
+ */
+private void sendEmailNotification(currentResult, urlToTest, environment, description, httpStatus) {
+
+    def DEFAULT_EMAIL = ALERT_VIA_EMAIL
+    def subject = "HealthCheck :: ${description} :: ${currentResult}!"
+    def body = getBody(currentResult, environment, urlToTest, description, httpStatus, BUILD_NUMBER, BUILD_TIMESTAMP, env.BUILD_URL)
+    emailext(
+            recipientProviders: [
+                    [$class: 'DevelopersRecipientProvider'],
+                    [$class: 'CulpritsRecipientProvider'],
+                    [$class: 'RequesterRecipientProvider'],
+                    [$class: 'FailingTestSuspectsRecipientProvider'],
+                    [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
+                    [$class: 'UpstreamComitterRecipientProvider']
+            ],
+            attachLog: false,
+            subject: subject,
+            body: body,
+            to: DEFAULT_EMAIL,
+            mimeType: 'text/html',
+            replyTo: env.DEFAULT_REPLYTO
+    )
+}
+
+/**
+ *
+ *  Create beautified HTML based report
+ *
+ * @param result current build result
+ * @param environment environment being checked
+ * @param urlToTest URL endpoint to test
+ * @param description service name being checked
+ * @param httpStatus response code
+ * @param buildNumber jenkins build number
+ * @param buildTime build timestamp
+ * @param buildUrl build url
+ * @return HTML report
+ */
+static String getBody(result, environment, urlToTest, description, httpStatus, buildNumber, buildTime, buildUrl) {
+
+    String emailBody = "<!DOCTYPE html><html lang='en'>" +
+            "<head><meta charset='UTF-8'><style>table {margin-bottom: 40px;}table thead th {padding-right:60px; white-space: nowrap;} table tbody td.content {vertical-align:top;}</style></head>" +
+            "<body><table><thead>" +
+            "<th>Result</th><th>Environment</th><th>Service</th><th>Response</th><th>Build #</th><th>Build Time</th><th>URL</th>" +
+            "</thead><tbody><tr>" +
+            "<td class='content'><a href='${buildUrl}console' target='_blank'>${result}</a></td>" +
+            "<td class='content'>${environment}</td>" +
+            "<td class='content'>${description}</td>" +
+            "<td class='content'>${httpStatus}</td>" +
+            "<td class='content'><a href='${buildUrl}console' target='_blank'>${buildNumber}</a></td>" +
+            "<td class='content'>${buildTime}</td>" +
+            "<td class='content'>${urlToTest}</td>" +
+            "</tr></tbody></table></body></html>"
+    return emailBody
+}
+
+/**
+ * Send a SLACK notification based on runtime settings.
+ *
+ * @param currentResult current build result
+ * @param urlToTest URL endpoint to test
+ * @param description service endpoint identifier
+ * @param httpStatus response code
+ */
+private void sendSlackNotification(currentResult, urlToTest, description, httpStatus) {
+
+    if (currentBuild.result != 'SUCCESS') {
+
+        String slackColor = '#00FF00'
+        if (currentResult == "FAILURE") {
+            slackColor = '#FF0000'
+        } else if (currentResult == "UNSTABLE") {
+            slackColor = '#FFFF00'
+        } else if (currentResult == "ABORTED") {
+            slackColor = '#FFA500'
+        }
+
+        def SLACK_CHANNEL = ALERT_VIA_SLACK
+        def message = "${description} :: Status=${httpStatus} \n ${urlToTest}"
+        slackSend channel: SLACK_CHANNEL,
+                color: slackColor,
+                message: message,
+                token: SLACK_TOKEN
+
+    }
+
+}

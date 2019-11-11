@@ -2,8 +2,9 @@ package com.mycompany.myproject.automation.frameworksupport;
 
 import com.jayway.restassured.path.json.JsonPath;
 import com.mycompany.myproject.automation.data.Constants;
+import com.mycompany.myproject.automation.data.enums.TestingUserQueue;
+import com.mycompany.myproject.automation.frameworksupport.type.Account;
 import com.pwc.core.framework.FrameworkConstants;
-import com.pwc.core.framework.JavascriptConstants;
 import com.pwc.core.framework.WebTestCase;
 import com.pwc.core.framework.command.WebServiceCommand;
 import com.pwc.core.framework.data.Credentials;
@@ -33,12 +34,22 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.IntStream;
 
 import static com.pwc.assertion.AssertService.assertEquals;
 import static com.pwc.assertion.AssertService.assertFail;
@@ -46,15 +57,14 @@ import static com.pwc.logging.service.LoggerService.LOG;
 
 public abstract class MyApplicationTestCase extends WebTestCase {
 
-    private Credentials credentials;
+    private Account currentUser;
     private boolean headlessMode = false;
-    private boolean previouslyCleared = false;
 
     @BeforeClass(alwaysRun = true)
     public void setUp() {
 
-        if (credentials == null) {
-            fetchEncryptedCredentials();
+        if (null == currentUser) {
+            currentUser = TestingUserQueue.getNextAvailableUser();
         }
 
         if (!isHeadlessMode()) {
@@ -67,10 +77,12 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     public void preserveProduction(Method m) {
 
         if (StringUtils.containsIgnoreCase(System.getProperty(FrameworkConstants.AUTOMATION_TEST_ENVIRONMENT), "prod")) {
+            List allowedProductionGroups = new ArrayList();
+            allowedProductionGroups.add(Groups.ACCEPTANCE_TEST);
+
             Test currentTest = m.getAnnotation(Test.class);
-            List<String> acceptableProductionGroups = Arrays.asList(Groups.ACCEPTANCE_TEST, Groups.NEURAL_NETWORK_TEST);
-            if (!CollectionUtils.containsAny(Arrays.asList(currentTest.groups()), acceptableProductionGroups)) {
-                assertFail("PREVENTING EXECUTION OF REGRESSION TEST='%s' IN PRODUCTION", m.getName());
+            if (!allowedProductionGroups.containsAll(Arrays.asList(currentTest.groups()))) {
+                assertFail("PREVENTING EXECUTION OF DESTRUCTIVE TEST='%s' IN PRODUCTION", m.getName());
                 tearDownClass();
                 System.exit(1);
             }
@@ -96,25 +108,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Generate and fetch Credentials.  Will attempt to login with Encrypted credentials first and if that fails
-     * try the none-version controlled credentials in a file in resources dir named "password.properties"
-     */
-    private void fetchEncryptedCredentials() {
-        try {
-            credentials = new Credentials(System.getenv(Constants.ENCRYPTED_SERVICE_USER_NAME_PROPERTY), System.getenv(Constants.ENCRYPTED_SERVICE_USER_PASS_PROPERTY));
-        } catch (Exception e) {
-            LOG(true, "Unable to locate Credentials for user='%s' in environment vars.", System.getenv(Constants.ENCRYPTED_SERVICE_USER_NAME_PROPERTY), e);
-        }
-
-        if (StringUtils.isEmpty(credentials.getPassword())) {
-            Properties tempProperties = PropertiesUtils.getPropertiesFromPropertyFile(Constants.LOCAL_CREDENTIALS_FILENAME);
-            credentials.setUsername(tempProperties.getProperty("service_username"));
-            credentials.setPassword(tempProperties.getProperty("service_password"));
-        }
-    }
-
-    /**
-     * Send a REST ws action to a service End Point
+     * Send a REST ws action to a service End Point.
      *
      * @param command BaseGetCommand command type
      */
@@ -123,7 +117,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Send a REST ws action to a service End Point
+     * Send a REST ws action to a service End Point.
      *
      * @param command     BaseGetCommand command type
      * @param requestBody POST request body
@@ -137,7 +131,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Send a REST ws action to a service End Point
+     * Send a REST ws action to a service End Point.
      *
      * @param command      BaseGetCommand command type
      * @param parameterMap Name-Value pair filled map of parameters to send in HTTP request
@@ -147,7 +141,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Get all URLs from a given sitemap file
+     * Get all URLs from a given sitemap file.
      *
      * @param siteMapUrl sitemap.xml url
      * @return complete set of URL's from given sitemap
@@ -165,7 +159,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Extract all text from the HTML page
+     * Extract all text from the HTML page.
      *
      * @param rawHtml raw HTML of a page
      * @return all non-html strings found in the page
@@ -189,7 +183,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Convert XML to JSON from driver version APIs
+     * Convert XML to JSON from driver version APIs.
      *
      * @return JSON representation of XML from WEB api
      */
@@ -224,7 +218,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Get a random snippet of a given String from the 0 index to a random location in the given <code>String</code>
+     * Get a random snippet of a given String from the 0 index to a random location in the given <code>String</code>.
      *
      * @param displayedColumnValue base value to get a snippet of
      * @return sub-string of original value
@@ -235,7 +229,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Get a random fragment of a given sentence of words
+     * Get a random fragment of a given sentence of words.
      *
      * @param displayedColumnValue base value to get a snippet or sentence
      * @return sub-string of original value
@@ -254,7 +248,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Get a random snippet of a given String from a random location in the given <code>String</code> to the end
+     * Get a random snippet of a given String from a random location in the given <code>String</code> to the end.
      *
      * @param displayedColumnValue base value to get a snippet of
      * @return sub-string of original value
@@ -266,7 +260,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Get a random sub-list of a given values from a random set in the given <code>List</code> to the end
+     * Get a random sub-list of a given values from a random set in the given <code>List</code> to the end.
      *
      * @param listValues base value to get a snippet of
      * @return sub-string of original value
@@ -288,7 +282,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
 
     /**
      * Verify if the Console contains entries greater than or equal to the allowable Level.  This is a filtered list
-     * for this specific project
+     * for this specific project.
      *
      * @param elementIdentifier WebElement to wait for to display before reading Console tab data
      * @param filterLevel       {@link Level} the level to filter the log entries
@@ -301,7 +295,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Harvest filtered list of Console requests
+     * Harvest filtered list of Console requests.
      *
      * @param elementIdentifier WebElement to wait for to display before reading Console tab data
      * @param level             {@link Level} the level to filter the log entries
@@ -324,7 +318,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Harvest filtered list of Network tab requests
+     * Harvest filtered list of Network tab requests.
      *
      * @param elementIdentifier WebElement to wait for to display before reading Network tab data
      * @return List of unique Network requests
@@ -345,7 +339,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     }
 
     /**
-     * Save a performance statistic to file for later reading by an external user / Jenkins
+     * Save a performance statistic to file for later reading by an external user / Jenkins.
      *
      * @param fileName  file to write to
      * @param statistic statistic to store to file
@@ -367,45 +361,12 @@ public abstract class MyApplicationTestCase extends WebTestCase {
         FileUtils.appendToFile(fileName, "YVALUE" + "=" + StringUtils.appendIfMissing(String.valueOf(statistic), ""));
     }
 
-    /**
-     * Clear opt-in popups unexpectedly displayed to user
-     */
-    protected void clearPopup() {
-
-        int RETRY_COUNT = 20;
-        if (!previouslyCleared) {
-            if (null != webEventController) {
-                IntStream.range(0, RETRY_COUNT).forEach(i -> {
-                    if (StringUtils.isNoneEmpty(getWebElementText("//div[@id='my_popup']"))) {
-                        executeJavascript(JavascriptConstants.CLICK_BY_XPATH, "//div[@id='my_popup']");
-                        previouslyCleared = true;
-                        return;
-                    }
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-        }
-        previouslyCleared = false;
-    }
-
     public boolean isHeadlessMode() {
         return headlessMode;
     }
 
     public void setHeadlessMode(boolean headlessMode) {
         this.headlessMode = headlessMode;
-    }
-
-    protected Credentials getCredentials() {
-        return credentials;
-    }
-
-    protected void setCredentials(Credentials encryptedCredentials) {
-        this.credentials = new Credentials(decrypt(encryptedCredentials.getUsername()), decrypt(encryptedCredentials.getPassword()));
     }
 
     private String decrypt(final String source) {
