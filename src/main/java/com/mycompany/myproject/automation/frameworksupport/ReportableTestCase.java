@@ -12,7 +12,7 @@ import static com.pwc.logging.service.LoggerService.LOG;
 public abstract class ReportableTestCase extends MyApplicationTestCase {
 
     /**
-     * Log a pretty spelling error to learn to file
+     * Log a pretty spelling error to learn to file.
      *
      * @param outputFile File to create and output log information to
      * @param output     First element in comma separated line to identify the purpose
@@ -34,7 +34,7 @@ public abstract class ReportableTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Log a pretty spelling error to learn to file
+     * Log a pretty spelling error to learn to file.
      *
      * @param outputFile        File to create and output log information to
      * @param purpose           First element in comma separated line to identify the purpose
@@ -57,7 +57,7 @@ public abstract class ReportableTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Write the CSV file header before appending data to the comma seperated file
+     * Write the CSV file header before appending data to the comma separated file.
      *
      * @param orderedCsvHeadingList List of file headings
      * @param file                  file to add headers to
@@ -81,11 +81,11 @@ public abstract class ReportableTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Create comma-separated log output to potentially write to file
+     * Create comma-separated log output to potentially write to file.
      *
      * @param output First element in comma separated line to identify the purpose
      * @param url    URL reference to include in log file
-     * @return
+     * @return hydrated value to log
      */
     private String writeToLogOutput(final String output, final String url) {
 
@@ -102,12 +102,12 @@ public abstract class ReportableTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Create comma-separated log output to potentially write to file
+     * Create comma-separated log output to potentially write to file.
      *
      * @param purpose           First element in comma separated line to identify the purpose
      * @param url               URL reference to include in log file
      * @param specificTextToLog Text to log
-     * @return
+     * @return hydrated value to log
      */
     private String writeToLogOutput(final String purpose, final String url, final Object specificTextToLog) {
 
@@ -115,7 +115,7 @@ public abstract class ReportableTestCase extends MyApplicationTestCase {
         try {
             stringBuilder.append(purpose);
             stringBuilder.append(",");
-            stringBuilder.append(String.valueOf(specificTextToLog));
+            stringBuilder.append(specificTextToLog);
             stringBuilder.append(",");
             stringBuilder.append(url);
             stringBuilder.append("\r\n");

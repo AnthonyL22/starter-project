@@ -1,0 +1,11 @@
+# Details of a test accounts
+environment: test
+accounts:
+  - firstName: Anthony
+    lastName: Lombardo
+    password: password1
+    email: anthonyl22@gmail.com
+  - firstName: Ben
+    lastName: Lacy
+    password: password1
+    email: ben22@gmail.com

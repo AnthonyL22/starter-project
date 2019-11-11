@@ -18,7 +18,7 @@ import static com.pwc.logging.service.LoggerService.LOG;
 public abstract class MachineLearningTestCase extends MyApplicationTestCase {
 
     /**
-     * Redirect, wait for page to load, and collect all visible @href WebElements
+     * Redirect, wait for page to load, and collect all visible @href WebElements.
      */
     protected Set<String> mineDataFromLikeEndpoints(Set<String> base) {
 
@@ -37,7 +37,7 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Find and store all visible WebElements on a page that contain an @href attribute
+     * Find and store all visible WebElements on a page that contain an @href attribute.
      */
     protected Set<String> collectVisibleHrefLinks() {
 
@@ -56,7 +56,7 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Verify the @href endpoint returns a 200 response code
+     * Verify the @href endpoint returns a 200 response code.
      *
      * @param endpointHrefSet Set of stored href attributes from previous mining operations
      */
@@ -74,7 +74,7 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Read the last time endpoints were mined from the application as a starting point
+     * Read the last time endpoints were mined from the application as a starting point.
      *
      * @param memorize memorize flag
      */
@@ -97,7 +97,7 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Save current runs endpoints to memory (JSON file)
+     * Save current runs endpoints to memory (JSON file).
      */
     protected void storeEndpointsToMemory(final boolean memorize, File jsonStorageFile, Set<String> base) {
 
@@ -110,7 +110,7 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
     }
 
     /**
-     * Scrub Set of all bad endpoints based on the original URL used to access the AUT
+     * Scrub Set of all bad endpoints based on the original URL used to access the AUT.
      *
      * @param setToScrub data set to scrub
      * @return cleaned Set of endpoints related to original URL

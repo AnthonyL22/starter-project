@@ -14,7 +14,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -109,7 +108,7 @@ public class AutomationStandardsTest {
             boolean foundMethodName = false;
             for (String testContent : testContents) {
                 if (StringUtils.contains(testContent, expectedMethodName)) {
-                    List<String> methodContents = Arrays.asList(StringUtils.split(testContent, DELIMITER));
+                    String[] methodContents = StringUtils.split(testContent, DELIMITER);
                     for (String methodContent : methodContents) {
                         if (StringUtils.containsIgnoreCase(methodContent, expectedMethodName)) {
                             String actualMethodName = "test" + StringUtils.substringAfter(methodContent, "test");
@@ -134,10 +133,9 @@ public class AutomationStandardsTest {
     public void testGherkinLoggingPresent() {
 
         for (File testFile : allTestFiles) {
-
             List<String> testContents = readCompiledClass(testFile);
             for (String testContent : testContents) {
-                if (testContent.contains("FEATURE")) {
+                if (testContent.contains("LoggerService\u0001\u0000\u0007FEATURE")) {
                     assertTrue("FEATURE Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("FEATURE"));
                     assertTrue("SCENARIO Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("SCENARIO"));
                 }
@@ -192,7 +190,7 @@ public class AutomationStandardsTest {
     }
 
     /**
-     * Read non-decompiled class contents
+     * Read non-decompiled class contents.
      *
      * @param classFile class to read
      * @return non-decompiled class content
@@ -202,11 +200,11 @@ public class AutomationStandardsTest {
     }
 
     /**
-     * Read and decompile class contents into readable <code>String[]</code>
+     * Read and decompile class contents into readable <code>String[]</code>.
      *
      * @param classFile class to decompile
      * @return String array of decompiled code
-     * @throws IOException
+     * @throws java.io.IOException decompile exception
      */
     private String[] decompileClassToArray(File classFile) throws IOException {
 

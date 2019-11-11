@@ -1,0 +1,191 @@
+#!groovy
+
+DEFAULT_EMAIL = 'anthonyl22@gmail.com'
+
+node {
+
+    def BITBUCKET_CREDENTIALS_ID = 'sample'
+    def BITBUCKET_SOURCE_PROJECT = 'ssh://sample.git'
+
+    def customRefSpec
+    def branchName
+    def gitCommitHash
+
+    def MAVEN_VERSION = 'Maven 3.3.9'
+    def mvnHome = tool name: "${MAVEN_VERSION}", type: 'maven'
+
+    stage('Verify') {
+
+        withEnv(["GIT_BRANCH=$BRANCH_NAME"]) {
+
+            branchName = "${GIT_BRANCH}"
+            echo "Selected Branch Name '${branchName}'"
+
+            if (branchName.contains("PR-")) {
+                def buildNumber = branchName.split("-")[1]
+                customRefSpec = "+refs/pull-requests/${buildNumber}/from:refs/remotes/origin/PR-${buildNumber}"
+            }
+            echo "Custom refspec ${customRefSpec}"
+
+            properties([
+                    buildDiscarder(
+                            logRotator(
+                                    artifactDaysToKeepStr: '3',
+                                    artifactNumToKeepStr: '5',
+                                    daysToKeepStr: '3',
+                                    numToKeepStr: '5'
+                            )
+                    ),
+                    disableConcurrentBuilds()
+            ])
+
+        }
+    }
+
+    stage('Checkout') {
+        checkout([$class                           : 'GitSCM',
+                  branches                         : [[name: "${branchName}"]],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions                       : [[$class: 'CleanCheckout']],
+                  submoduleCfg                     : [],
+                  userRemoteConfigs                : [
+                          [credentialsId: BITBUCKET_CREDENTIALS_ID,
+                           url          : BITBUCKET_SOURCE_PROJECT,
+                           refspec      : customRefSpec]]
+        ])
+    }
+
+    def pullRequestUser = sh script: "git log -1 --pretty=format:'%an'", returnStdout: true
+    echo "Current test.env=${pullRequestUser} Selected"
+
+    stage('Analyze Code Quality') {
+        try {
+            currentBuild.result = 'SUCCESS'
+            timeout(time: 5, unit: 'MINUTES') {
+                int result = sh script: "'${mvnHome}/bin/mvn' -U formatter:validate -f pom.xml", returnStatus: true
+                if (result > 0) {
+                    currentBuild.result = 'FAILURE'
+                    sendEmailNotification(branchName, gitCommitHash, currentBuild.result)
+                    error("Code Not Formatted Correctly.  Please run 'mvn formatter:format' on in your branch then retry.")
+                }
+            }
+        } catch (err) {
+            currentBuild.result = 'UNSTABLE'
+            error 'Analyze Code Quality Timeout'
+        }
+    }
+
+    stage('Build') {
+        gitCommitHash = sh(
+                script: 'git rev-parse --short HEAD --format=\'%ae\'',
+                returnStdout: true
+        ).trim()
+
+        try {
+            timeout(time: 5, unit: 'MINUTES') {
+                int result = sh script: "'${mvnHome}/bin/mvn' clean install -U failsafe:verify  -f pom.xml", returnStatus: true
+                if (result > 0) {
+                    currentBuild.result = 'FAILURE'
+                    sendEmailNotification(branchName, gitCommitHash, currentBuild.result)
+                    error("Build Failure Occurred")
+                }
+            }
+        } catch (err) {
+            currentBuild.result = 'UNSTABLE'
+            error 'Build Timeout'
+        }
+    }
+
+    stage("Publish Reports") {
+        parallel(
+                "TestNG": {
+                    publishHTML(
+                            [allowMissing         : true,
+                             alwaysLinkToLastBuild: true,
+                             keepAll              : false,
+                             reportDir            : '**/target/failsafe-reports/**/testng-results.xml',
+                             reportFiles          : 'index.html',
+                             reportName           : 'Automation Report',
+                             reportTitles         : 'Automation Report'])
+                },
+                "Junit": {
+                    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/*.xml', healthScaleFactor: 1.0])
+                }
+        )
+    }
+
+    stage('SonarQube Analysis') {
+        try {
+            withSonarQubeEnv('sonarqube') {
+                sh script: "'${mvnHome}/bin/mvn' sonar:sonar -Dsonar.branch.name=${branchName} -f pom.xml"
+            }
+        } catch (Exception e) {
+            println "Temporarily ignoring an error while invoking Sonar logic: ${e.message}"
+        }
+    }
+
+    stage("Quality Gate Approval") {
+        timeout(time: 3, unit: 'MINUTES') {
+            def qg = waitForQualityGate()
+            if (qg.status != 'OK') {
+                currentBuild.result = 'FAILURE'
+                error "Quality gate failure: ${qg.status}"
+            }
+        }
+    }
+
+}
+
+/**
+ * Send an email based on runtime settings.
+ *
+ * @param branchName branch name to reference in the email
+ * @param currentResult current build result
+ */
+private void sendEmailNotification(branchName, gitCommitHash, currentResult) {
+
+    def subject = "ci-cd :: ${branchName} :: ${currentResult}!"
+    def body = getBody(currentResult, gitCommitHash, branchName, BUILD_NUMBER, BUILD_TIMESTAMP, env.BUILD_URL)
+    emailext(
+            recipientProviders: [
+                    [$class: 'DevelopersRecipientProvider'],
+                    [$class: 'CulpritsRecipientProvider'],
+                    [$class: 'RequesterRecipientProvider'],
+                    [$class: 'FailingTestSuspectsRecipientProvider'],
+                    [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
+                    [$class: 'UpstreamComitterRecipientProvider']
+            ],
+            attachLog: false,
+            subject: subject,
+            body: body,
+            to: DEFAULT_EMAIL,
+            mimeType: 'text/html',
+            replyTo: env.DEFAULT_REPLYTO
+    )
+}
+
+/**
+ *
+ *  Create beautified HTML based report
+ *
+ * @param result current build result
+ * @param version GIT Hash version
+ * @param branch branch selected
+ * @param buildNumber jenkins build number
+ * @param buildTime build timestamp
+ * @param buildUrl build url
+ * @return HTML report
+ */
+static String getBody(result, version, branch, buildNumber, buildTime, buildUrl) {
+
+    String emailBody = "<!DOCTYPE html><html lang='en'>" +
+            "<head><meta charset='UTF-8'><style>table {margin-bottom: 40px;}table thead th {padding-right:60px; white-space: nowrap;} table tbody td.content {vertical-align:top;}</style></head>" +
+            "<body><table><thead><th>Result</th><th>Version</th><th>Branch</th><th>Build #</th><th>Build Time</th></thead><tbody><tr>" +
+            "<td class='content'><a href='${buildUrl}console' target='_blank'>${result}</a></td>" +
+            "<td class='content'>${version}</td>" +
+            "<td class='content'>${branch}</td>" +
+            "<td class='content'><a href='${buildUrl}console' target='_blank'>${buildNumber}</a></td>" +
+            "<td class='content'>${buildTime}</td>" +
+            "</tr></tbody></table></body></html>"
+    return emailBody
+}
