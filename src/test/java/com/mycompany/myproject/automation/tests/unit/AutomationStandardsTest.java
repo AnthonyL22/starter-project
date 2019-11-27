@@ -34,7 +34,7 @@ public class AutomationStandardsTest {
     public void setUp() {
 
         File directory = PropertiesUtils.getFileFromResources(WEB_TEST_DIRECTORY_LOCATION);
-        allFiles.addAll(FileUtils.listFiles(directory, new String[] {"class"}, true));
+        allFiles.addAll(FileUtils.listFiles(directory, new String[]{"class"}, true));
 
         for (File allFile : allFiles) {
             if (allFile.getName().contains("Test.class")) {
@@ -63,7 +63,7 @@ public class AutomationStandardsTest {
     @Test
     public void testPackageNamingSpecialChars() {
 
-        Pattern specialCharPattern = Pattern.compile ("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
+        Pattern specialCharPattern = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
 
         allTestFiles.forEach(individual -> {
             String packageName = StringUtils.substringBeforeLast(individual.getAbsolutePath(), "/");
@@ -77,9 +77,7 @@ public class AutomationStandardsTest {
     @Test()
     public void testNamedCorrectlyTest() {
 
-        for (File testFile : allTestFiles) {
-            Assert.assertTrue("Verify Test Naming for test='" + testFile.getName() + "'", StringUtils.endsWith(testFile.getName(), "Test.class"));
-        }
+        allTestFiles.forEach(testFile -> Assert.assertTrue("Verify Test Naming for test='" + testFile.getName() + "'", StringUtils.endsWith(testFile.getName(), "Test.class")));
 
     }
 
@@ -103,11 +101,7 @@ public class AutomationStandardsTest {
     @Test
     public void testNameEndsWithTest() {
 
-        for (File testFile : allTestFiles) {
-
-            assertTrue("Verify test ends with 'Test' suffix", StringUtils.endsWith(testFile.getName(), "Test.class"));
-
-        }
+        allTestFiles.forEach(testFile -> assertTrue("Verify test ends with 'Test' suffix", StringUtils.endsWith(testFile.getName(), "Test.class")));
 
     }
 
@@ -150,7 +144,7 @@ public class AutomationStandardsTest {
     @Test
     public void testGherkinLoggingPresent() {
 
-        for (File testFile : allTestFiles) {
+        allTestFiles.forEach(testFile -> {
             List<String> testContents = readCompiledClass(testFile);
             for (String testContent : testContents) {
                 if (testContent.contains("LoggerService\u0001\u0000\u0007FEATURE")) {
@@ -158,14 +152,14 @@ public class AutomationStandardsTest {
                     assertTrue("SCENARIO Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("SCENARIO"));
                 }
             }
-        }
+        });
 
     }
 
     @Test
     public void testGroupNamesPresent() {
 
-        for (File testFile : allTestFiles) {
+        allTestFiles.forEach(testFile -> {
 
             List<String> testContents = readCompiledClass(testFile);
             for (String testContent : testContents) {
@@ -173,14 +167,14 @@ public class AutomationStandardsTest {
                     assertTrue("TestNG Group annotation present for test='" + testFile.getName() + "'", testContent.contains("groups"));
                 }
             }
-        }
+        });
 
     }
 
     @Test
     public void testSystemOutPresent() {
 
-        for (File testFile : allTestFiles) {
+        allTestFiles.forEach(testFile -> {
 
             List<String> testContents = readCompiledClass(testFile);
             for (String testContent : testContents) {
@@ -188,14 +182,14 @@ public class AutomationStandardsTest {
                     assertFalse("JDK Native 'System' class usages present in test='" + testFile.getName() + "'", testContent.contains("System"));
                 }
             }
-        }
+        });
 
     }
 
     @Test
     public void testThreadSleepPresent() {
 
-        for (File testFile : allTestFiles) {
+        allTestFiles.forEach(testFile -> {
 
             List<String> testContents = readCompiledClass(testFile);
             for (String testContent : testContents) {
@@ -203,7 +197,7 @@ public class AutomationStandardsTest {
                     assertFalse("'Thread.sleep' is present in test='" + testFile.getName() + "'", testContent.contains("Thread") && testContent.contains("sleep"));
                 }
             }
-        }
+        });
 
     }
 
