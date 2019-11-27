@@ -17,6 +17,8 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -46,13 +48,29 @@ public class AutomationStandardsTest {
     public void tearDown() {
     }
 
-    @Test()
-    public void testFirstLetterCapitalizedTest() {
+    @Test
+    public void testPackageNamingCapitalLetters() {
 
-        for (File testFile : allTestFiles) {
-            String firstLetterInClassName = testFile.getName().substring(0, 1);
-            Assert.assertTrue("Verify Test Name begins with CAPITAL for test='" + testFile.getName() + "'", StringUtils.isAllUpperCase(firstLetterInClassName));
-        }
+        allTestFiles.forEach(individual -> {
+            String packageName = StringUtils.substringBeforeLast(individual.getAbsolutePath(), "/");
+            packageName = StringUtils.substringAfter(packageName, "java");
+            boolean packageContainsUpperCaseChars = !packageName.equals(packageName.toLowerCase());
+            Assert.assertFalse("Package name shouldn't contain capital letters.  Please review package='" + packageName + "'", packageContainsUpperCaseChars);
+        });
+
+    }
+
+    @Test
+    public void testPackageNamingSpecialChars() {
+
+        Pattern specialCharPattern = Pattern.compile ("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
+
+        allTestFiles.forEach(individual -> {
+            String packageName = StringUtils.substringBeforeLast(individual.getAbsolutePath(), "/");
+            packageName = StringUtils.substringAfter(packageName, "java");
+            Matcher m = specialCharPattern.matcher(packageName);
+            Assert.assertFalse("Package name shouldn't contain special chars.  Please review package='" + packageName + "'", m.find());
+        });
 
     }
 
