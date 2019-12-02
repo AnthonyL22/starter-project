@@ -48,28 +48,12 @@ public class AutomationStandardsTest {
     public void tearDown() {
     }
 
-    @Test
-    public void testPackageNamingCapitalLetters() {
+    @Test()
+    public void testFirstLetterCapitalizedTest() {
 
-        allTestFiles.forEach(individual -> {
-            String packageName = StringUtils.substringBeforeLast(individual.getAbsolutePath(), "/");
-            packageName = StringUtils.substringAfter(packageName, "java");
-            boolean packageContainsUpperCaseChars = !packageName.equals(packageName.toLowerCase());
-            Assert.assertFalse("Package name shouldn't contain capital letters.  Please review package='" + packageName + "'", packageContainsUpperCaseChars);
-        });
-
-    }
-
-    @Test
-    public void testPackageNamingSpecialChars() {
-
-        Pattern specialCharPattern = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
-
-        allTestFiles.forEach(individual -> {
-            String packageName = StringUtils.substringBeforeLast(individual.getAbsolutePath(), "/");
-            packageName = StringUtils.substringAfter(packageName, "java");
-            Matcher m = specialCharPattern.matcher(packageName);
-            Assert.assertFalse("Package name shouldn't contain special chars.  Please review package='" + packageName + "'", m.find());
+        allTestFiles.forEach(testFile -> {
+            String firstLetterInClassName = testFile.getName().substring(0, 1);
+            Assert.assertTrue("Verify Test Name begins with CAPITAL for test='" + testFile.getName() + "'", StringUtils.isAllUpperCase(firstLetterInClassName));
         });
 
     }
@@ -82,20 +66,36 @@ public class AutomationStandardsTest {
     }
 
     @Test()
-    public void testNameNotDuplicatedTest() {
+    public void testPackageNamingCapitalLetters() {
 
-        for (File testFile : allTestFiles) {
+        allTestFiles.forEach(individual -> {
+            String packageName = StringUtils.substringBeforeLast(individual.getAbsolutePath(), "/");
+            packageName = StringUtils.substringAfter(packageName, "java");
+            boolean packageContainsUpperCaseChars = !packageName.equals(packageName.toLowerCase());
+            Assert.assertFalse("Package name shouldn't contain capital letters.  Please review package='" + packageName + "'", packageContainsUpperCaseChars);
+        });
+    }
 
-            int numberOfTestsNamedIdentically = 0;
-            for (File individual : allTestFiles) {
-                if (individual.getName().equals(testFile.getName())) {
-                    numberOfTestsNamedIdentically++;
-                }
-            }
+    @Test()
+    public void testPackageNamingSpecialChars() {
 
-            assertEquals("Verify Test Name Not duplicated for test='" + testFile.getName() + "'", 1, numberOfTestsNamedIdentically);
-        }
+        Pattern specialCharPattern = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
 
+        allTestFiles.forEach(individual -> {
+            String packageName = StringUtils.substringBeforeLast(individual.getAbsolutePath(), "/");
+            packageName = StringUtils.substringAfter(packageName, "java");
+            Matcher m = specialCharPattern.matcher(packageName);
+            Assert.assertFalse("Package name shouldn't contain special chars.  Please review package='" + packageName + "'", m.find());
+        });
+    }
+
+    @Test()
+    public void testNameDuplicated() {
+
+        allTestFiles.forEach(testFile -> {
+            int numberOfTestsNamedIdentically = (int) allTestFiles.stream().filter(individual -> individual.getName().equals(testFile.getName())).count();
+            Assert.assertEquals("Test Name should not be duplicated.  Please review test='" + testFile.getName() + "'", 1, numberOfTestsNamedIdentically);
+        });
     }
 
     @Test
@@ -110,7 +110,7 @@ public class AutomationStandardsTest {
 
         final String DELIMITER = "\u0001";
 
-        for (File testFile : allTestFiles) {
+        allTestFiles.forEach(testFile -> {
 
             String expectedMethodName = testFile.getName();
             expectedMethodName = StringUtils.removeEnd(expectedMethodName, "Test.class");
@@ -137,7 +137,7 @@ public class AutomationStandardsTest {
 
             Assert.assertTrue("Test method name matches and adheres to naming standards of class name for test='" + testFile.getName() + "'", foundMethodName);
 
-        }
+        });
 
     }
 
@@ -146,12 +146,12 @@ public class AutomationStandardsTest {
 
         allTestFiles.forEach(testFile -> {
             List<String> testContents = readCompiledClass(testFile);
-            for (String testContent : testContents) {
+            testContents.forEach(testContent -> {
                 if (testContent.contains("LoggerService\u0001\u0000\u0007FEATURE")) {
                     assertTrue("FEATURE Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("FEATURE"));
                     assertTrue("SCENARIO Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("SCENARIO"));
                 }
-            }
+            });
         });
 
     }
@@ -160,13 +160,12 @@ public class AutomationStandardsTest {
     public void testGroupNamesPresent() {
 
         allTestFiles.forEach(testFile -> {
-
             List<String> testContents = readCompiledClass(testFile);
-            for (String testContent : testContents) {
+            testContents.forEach(testContent -> {
                 if (testContent.contains("groups")) {
                     assertTrue("TestNG Group annotation present for test='" + testFile.getName() + "'", testContent.contains("groups"));
                 }
-            }
+            });
         });
 
     }
@@ -175,13 +174,12 @@ public class AutomationStandardsTest {
     public void testSystemOutPresent() {
 
         allTestFiles.forEach(testFile -> {
-
             List<String> testContents = readCompiledClass(testFile);
-            for (String testContent : testContents) {
+            testContents.forEach(testContent -> {
                 if (testContent.contains("System") && testContent.contains("out")) {
                     assertFalse("JDK Native 'System' class usages present in test='" + testFile.getName() + "'", testContent.contains("System"));
                 }
-            }
+            });
         });
 
     }
@@ -190,13 +188,12 @@ public class AutomationStandardsTest {
     public void testThreadSleepPresent() {
 
         allTestFiles.forEach(testFile -> {
-
             List<String> testContents = readCompiledClass(testFile);
-            for (String testContent : testContents) {
+            testContents.forEach(testContent -> {
                 if (testContent.contains("Thread") && testContent.contains("sleep")) {
                     assertFalse("'Thread.sleep' is present in test='" + testFile.getName() + "'", testContent.contains("Thread") && testContent.contains("sleep"));
                 }
-            }
+            });
         });
 
     }
@@ -216,7 +213,7 @@ public class AutomationStandardsTest {
      *
      * @param classFile class to decompile
      * @return String array of decompiled code
-     * @throws java.io.IOException decompile exception
+     * @throws IOException decompile exception
      */
     private String[] decompileClassToArray(File classFile) throws IOException {
 
