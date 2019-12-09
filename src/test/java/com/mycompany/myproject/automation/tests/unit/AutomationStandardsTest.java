@@ -77,6 +77,17 @@ public class AutomationStandardsTest {
     }
 
     @Test()
+    public void testClassNameNotStartingWithCapitalLetter() {
+
+        allTestFiles.forEach(testFile -> {
+            String firstLetter = testFile.getName().substring(0, 1);
+            boolean firstLetterOfClassIsCapitalized = !firstLetter.equals(firstLetter.toLowerCase());
+            Assert.assertTrue("Class name should begin with a Capital Letter.  Please review test='" + testFile.getName() + "'", firstLetterOfClassIsCapitalized);
+        });
+
+    }
+
+    @Test()
     public void testPackageNamingSpecialChars() {
 
         Pattern specialCharPattern = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
