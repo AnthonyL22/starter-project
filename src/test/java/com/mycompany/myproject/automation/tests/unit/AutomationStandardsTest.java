@@ -14,17 +14,17 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 public class AutomationStandardsTest {
 
+    private static final String DECOMPILER_DELIMITER = "\u0001";
     private static final String WEB_TEST_DIRECTORY_LOCATION = "com/mycompany/myproject/automation/tests/web";
     private Collection<File> allFiles = new LinkedList<>();
     private Collection<File> allTestFiles = new LinkedList<>();
@@ -52,15 +52,8 @@ public class AutomationStandardsTest {
 
         allTestFiles.forEach(testFile -> {
             String firstLetterInClassName = testFile.getName().substring(0, 1);
-            Assert.assertTrue("Verify Test Name begins with CAPITAL for test='" + testFile.getName() + "'", StringUtils.isAllUpperCase(firstLetterInClassName));
+            Assert.assertTrue("Class name should begin with a Capital Letter.  Please review test='" + testFile.getName() + "'", StringUtils.isAllUpperCase(firstLetterInClassName));
         });
-
-    }
-
-    @Test()
-    public void testNamedCorrectlyTest() {
-
-        allTestFiles.forEach(testFile -> Assert.assertTrue("Verify Test Naming for test='" + testFile.getName() + "'", StringUtils.endsWith(testFile.getName(), "Test.class")));
 
     }
 
@@ -76,17 +69,6 @@ public class AutomationStandardsTest {
     }
 
     @Test()
-    public void testClassNameNotStartingWithCapitalLetter() {
-
-        allTestFiles.forEach(testFile -> {
-            String firstLetter = testFile.getName().substring(0, 1);
-            boolean firstLetterOfClassIsCapitalized = !firstLetter.equals(firstLetter.toLowerCase());
-            Assert.assertTrue("Class name should begin with a Capital Letter.  Please review test='" + testFile.getName() + "'", firstLetterOfClassIsCapitalized);
-        });
-
-    }
-
-    @Test()
     public void testPackageNamingSpecialChars() {
 
         Pattern specialCharPattern = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
@@ -97,6 +79,7 @@ public class AutomationStandardsTest {
             Matcher m = specialCharPattern.matcher(packageName);
             Assert.assertFalse("Package name shouldn't contain special chars.  Please review package='" + packageName + "'", m.find());
         });
+
     }
 
     @Test()
@@ -106,19 +89,18 @@ public class AutomationStandardsTest {
             int numberOfTestsNamedIdentically = (int) allTestFiles.stream().filter(individual -> individual.getName().equals(testFile.getName())).count();
             Assert.assertEquals("Test Name should not be duplicated.  Please review test='" + testFile.getName() + "'", 1, numberOfTestsNamedIdentically);
         });
+
     }
 
     @Test
     public void testNameEndsWithTest() {
 
-        allTestFiles.forEach(testFile -> assertTrue("Verify test ends with 'Test' suffix", StringUtils.endsWith(testFile.getName(), "Test.class")));
+        allTestFiles.forEach(testFile -> Assert.assertTrue("Verify test ends with 'Test' suffix", StringUtils.endsWith(testFile.getName(), "Test.class")));
 
     }
 
     @Test
     public void testNameSameAsMethodName() {
-
-        final String DELIMITER = "\u0001";
 
         allTestFiles.forEach(testFile -> {
 
@@ -130,7 +112,7 @@ public class AutomationStandardsTest {
             boolean foundMethodName = false;
             for (String testContent : testContents) {
                 if (StringUtils.contains(testContent, expectedMethodName)) {
-                    String[] methodContents = StringUtils.split(testContent, DELIMITER);
+                    String[] methodContents = StringUtils.split(testContent, DECOMPILER_DELIMITER);
                     for (String methodContent : methodContents) {
                         if (StringUtils.containsIgnoreCase(methodContent, expectedMethodName)) {
                             String actualMethodName = "test" + StringUtils.substringAfter(methodContent, "test");
@@ -158,8 +140,8 @@ public class AutomationStandardsTest {
             List<String> testContents = readCompiledClass(testFile);
             testContents.forEach(testContent -> {
                 if (testContent.contains("LoggerService\u0001\u0000\u0007FEATURE")) {
-                    assertTrue("FEATURE Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("FEATURE"));
-                    assertTrue("SCENARIO Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("SCENARIO"));
+                    Assert.assertTrue("FEATURE Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("FEATURE"));
+                    Assert.assertTrue("SCENARIO Gherkin logging is present for test='" + testFile.getName() + "'", testContent.contains("SCENARIO"));
                 }
             });
         });
@@ -173,7 +155,7 @@ public class AutomationStandardsTest {
             List<String> testContents = readCompiledClass(testFile);
             testContents.forEach(testContent -> {
                 if (testContent.contains("groups")) {
-                    assertTrue("TestNG Group annotation present for test='" + testFile.getName() + "'", testContent.contains("groups"));
+                    Assert.assertTrue("TestNG Group annotation present for test='" + testFile.getName() + "'", testContent.contains("groups"));
                 }
             });
         });
@@ -187,7 +169,7 @@ public class AutomationStandardsTest {
             List<String> testContents = readCompiledClass(testFile);
             testContents.forEach(testContent -> {
                 if (testContent.contains("System") && testContent.contains("out")) {
-                    assertFalse("JDK Native 'System' class usages present in test='" + testFile.getName() + "'", testContent.contains("System"));
+                    Assert.assertFalse("JDK Native 'System' class usages present in test='" + testFile.getName() + "'", testContent.contains("System"));
                 }
             });
         });
@@ -201,7 +183,7 @@ public class AutomationStandardsTest {
             List<String> testContents = readCompiledClass(testFile);
             testContents.forEach(testContent -> {
                 if (testContent.contains("Thread") && testContent.contains("sleep")) {
-                    assertFalse("'Thread.sleep' is present in test='" + testFile.getName() + "'", testContent.contains("Thread") && testContent.contains("sleep"));
+                    Assert.assertFalse("'Thread.sleep' is present in test='" + testFile.getName() + "'", testContent.contains("Thread") && testContent.contains("sleep"));
                 }
             });
         });
@@ -209,13 +191,30 @@ public class AutomationStandardsTest {
     }
 
     /**
-     * Read non-decompiled class contents.
+     * Read the compiled version of a class file.
      *
-     * @param classFile class to read
-     * @return non-decompiled class content
+     * @param testFile class File to read
+     * @return <code>String</code> representation of .class file
      */
-    private List<String> readCompiledClass(File classFile) {
-        return com.pwc.core.framework.util.FileUtils.readFile(classFile, classFile.getName());
+    private List<String> readCompiledClass(File testFile) {
+        return com.pwc.core.framework.util.FileUtils.readFile(testFile, testFile.getName());
+    }
+
+    /**
+     * Find a method name in a class's contents
+     *
+     * @param testContents     class contents as List
+     * @param methodNameToFind method name to find
+     * @return delimited list by special decompiler character
+     */
+    private List<String> checkTestContentForMethodName(final List<String> testContents, final String methodNameToFind) {
+
+        for (String testContent : testContents) {
+            if (StringUtils.contains(testContent, methodNameToFind)) {
+                return Arrays.asList(StringUtils.split(testContent, DECOMPILER_DELIMITER));
+            }
+        }
+        return new ArrayList<>();
     }
 
     /**
