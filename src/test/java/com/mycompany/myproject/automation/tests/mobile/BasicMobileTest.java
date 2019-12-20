@@ -22,11 +22,10 @@ public class BasicMobileTest extends MobileTestCase {
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
     public void testBasicMobile() {
 
-        //        mobileAction("type == 'XCUIElementTypeStaticText' and name == 'General'");
         mobileAction("General");
-//        mobileAction("type == 'XCUIElementTypeApplication' and name == 'Settings'");
         mobileAction("XCUIElementTypeApplication");
-        System.out.println();
+        mobileAction("type == 'XCUIElementTypeStaticText' and name == 'General'");
+        mobileAction("type == 'XCUIElementTypeApplication' and name == 'Settings'");
 
     }
 
