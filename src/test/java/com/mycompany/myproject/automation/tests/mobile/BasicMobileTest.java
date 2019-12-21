@@ -27,6 +27,9 @@ public class BasicMobileTest extends MobileTestCase {
         mobileAction("type == 'XCUIElementTypeStaticText' and name == 'General'");
         mobileAction("type == 'XCUIElementTypeApplication' and name == 'Settings'");
 
+        resetApp();
+
+
     }
 
 }
