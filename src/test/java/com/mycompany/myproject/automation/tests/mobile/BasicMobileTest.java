@@ -5,6 +5,7 @@ import com.pwc.core.framework.MobileTestCase;
 import com.pwc.core.framework.annotations.Issue;
 import com.pwc.core.framework.annotations.MaxRetryCount;
 import com.pwc.core.framework.listeners.Retry;
+import org.javatuples.Pair;
 import org.testng.annotations.Test;
 
 public class BasicMobileTest extends MobileTestCase {
@@ -22,7 +23,7 @@ public class BasicMobileTest extends MobileTestCase {
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
     public void testBasicMobile() {
 
-        mobileAction("General");
+        Pair x = mobileAction("General");
         mobileAction("XCUIElementTypeApplication");
         mobileAction("type == 'XCUIElementTypeStaticText' and name == 'General'");
         mobileAction("type == 'XCUIElementTypeApplication' and name == 'Settings'");
