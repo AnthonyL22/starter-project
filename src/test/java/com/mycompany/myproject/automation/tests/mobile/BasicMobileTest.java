@@ -23,13 +23,12 @@ public class BasicMobileTest extends MobileTestCase {
     @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
     public void testBasicMobile() {
 
-        Pair x = mobileAction("General");
-        mobileAction("XCUIElementTypeApplication");
-        mobileAction("type == 'XCUIElementTypeStaticText' and name == 'General'");
-        mobileAction("type == 'XCUIElementTypeApplication' and name == 'Settings'");
+        Pair element = mobileAction("General");
+        element = mobileAction("XCUIElementTypeApplication");
+        element = mobileAction("type == 'XCUIElementTypeStaticText' and name == 'General'");
+        element = mobileAction("type == 'XCUIElementTypeApplication' and name == 'Settings'");
 
         resetApp();
-
 
     }
 
