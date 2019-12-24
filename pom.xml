@@ -65,7 +65,7 @@
     <jazzy.version>0.5.2-rtext-1.4.1-2</jazzy.version>
     <jsoup.version>1.8.2</jsoup.version>
     <log4j.version>1.2.17</log4j.version>
-    <logging-microservice.version>1.0.5</logging-microservice.version>
+    <logging-microservice.version>1.0.6</logging-microservice.version>
     <lombok.version>1.18.4</lombok.version>
     <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>2.9</maven-dependency-plugin.version>
@@ -677,7 +677,7 @@
                 <phase>install</phase>
                 <configuration>
                   <arguments>
-                    <argument>src.test.java.com.mycompany.myproject.automation.tests.web</argument>
+                    <argument>src.test.java.com.mycompany.myproject.automation.tests.manual</argument>
                     <argument>src.main.java.com.mycompany.myproject.automation.data</argument>
                     <argument>Manual_Test_Cases.txt</argument>
                     <argument>Constants.java</argument>
