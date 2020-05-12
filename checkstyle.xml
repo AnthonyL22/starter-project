@@ -9,6 +9,8 @@
 
     <property name="fileExtensions" value="java, properties, xml"/>
 
+    <!-- Checks for whitespace -->
+    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
     </module>
@@ -34,7 +36,14 @@
             <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
         </module>
 
+        <!-- Checks for imports                            -->
+        <!-- See https://checkstyle.org/config_import.html -->
         <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="false"/>
+        </module>
 
         <module name="OneTopLevelClass"/>
 
@@ -88,6 +97,8 @@
 
         <module name="EmptyLineSeparator">
             <property name="allowNoEmptyLineBetweenFields" value="true"/>
+            <property name="tokens" value="VARIABLE_DEF, METHOD_DEF"/>
+            <property name="allowMultipleEmptyLines" value="false"/>
         </module>
 
         <module name="SeparatorWrap">
@@ -101,14 +112,6 @@
             <property name="tokens" value="COMMA"/>
             <property name="option" value="EOL"/>
         </module>
-
-        <!--
-        <module name="SeparatorWrap">
-        <property name="id" value="SeparatorWrapMethodRef"/>
-        <property name="tokens" value="METHOD_REF"/>
-        <property name="option" value="nl"/>
-        </module>
-        -->
 
         <module name="PackageName">
             <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
@@ -128,13 +131,6 @@
             <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
             <message key="name.invalidPattern" value="Parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
-
-        <!--
-        <module name="CatchParameterName">
-          <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
-          <message key="name.invalidPattern" value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
-        </module>
-        -->
 
         <module name="LocalVariableName">
             <property name="tokens" value="VARIABLE_DEF"/>
@@ -182,7 +178,9 @@
 
         <module name="OverloadMethodsDeclarationOrder"/>
 
-        <module name="VariableDeclarationUsageDistance"/>
+        <module name="VariableDeclarationUsageDistance">
+            <property name="allowedDistance" value="10"/>
+        </module>
 
         <module name="CustomImportOrder">
             <property name="sortImportsInGroupAlphabetically" value="false"/>

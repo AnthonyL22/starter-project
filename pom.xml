@@ -94,21 +94,6 @@
     <test.results.dir>failsafe-reports</test.results.dir>
     <testng.version>6.9.8</testng.version>
   </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.opera</groupId>
-        <artifactId>operadriver</artifactId>
-        <version>${opera.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-driver</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>com.browserstack</groupId>
@@ -574,7 +559,7 @@
             <phase>install</phase>
             <configuration>
               <includes>
-                <include>**/unit/*Test.java</include>
+                <include>**/unit/*Standards.java</include>
               </includes>
             </configuration>
           </execution>
