@@ -39,7 +39,7 @@ node {
                             parameters: [
                                     choice(
                                             name: 'testPlan',
-                                            choices: "${testPlan}\nanther-test-plan.jmx\n",
+                                            choices: "${testPlan}\nanother-test-plan.jmx\n",
                                             description: 'Please select a performance test plan'
                                     )
                             ]
