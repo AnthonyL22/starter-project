@@ -164,16 +164,6 @@ node {
         )
     }
 
-    stage('Checkout') {
-        checkout([$class                           : 'GitSCM',
-                  branches                         : [[name: "${branchName}"]],
-                  doGenerateSubmoduleConfigurations: false,
-                  extensions                       : [[$class: 'CleanCheckout']],
-                  submoduleCfg                     : [],
-                  userRemoteConfigs                : [[credentialsId: BITBUCKET_CREDENTIALS_ID, url: BITBUCKET_SOURCE_PROJECT]]
-        ])
-    }
-
     stage('Setup JMeter') {
         sh script: "wget -c http://ftp.ps.pl/pub/apache//jmeter/binaries/apache-jmeter-5.2.1.tgz"
         sh script: "tar -xf apache-jmeter-5.2.1.tgz"
