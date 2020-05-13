@@ -12,6 +12,7 @@
                 <value>classpath:/config/${test.env}/automation.properties</value>
                 <value>classpath:/config/${test.env}/grid.properties</value>
                 <value>classpath:/config/${test.env}/database.properties</value>
+                <value>classpath:/config/${test.env}/mobile.properties</value>
             </list>
         </property>
     </bean>

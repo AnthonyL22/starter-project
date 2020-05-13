@@ -53,7 +53,7 @@
     <commons.io.version>2.4</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commonsdbcp2.version>2.0</commonsdbcp2.version>
-    <core-microservice.version>2.0.69</core-microservice.version>
+    <core-microservice.version>2.0.74</core-microservice.version>
     <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
     <format-maven-plugin.version>2.0.1</format-maven-plugin.version>
     <guava.version>22.0</guava.version>
@@ -80,13 +80,13 @@
     <restassured.version>2.9.0</restassured.version>
     <runner-microservice.version>1.0.2</runner-microservice.version>
     <runners>3</runners>
-    <runtime-microservice.version>1.0.23</runtime-microservice.version>
+    <runtime-microservice.version>1.0.25</runtime-microservice.version>
     <selenium.version>3.141.59</selenium.version>
     <skip.profile>true</skip.profile>
     <skip.surefire.tests>false</skip.surefire.tests>
     <slf4j.version>1.7.21</slf4j.version>
     <sortpom-maven-plugin.version>2.6.0</sortpom-maven-plugin.version>
-    <spring.version>4.0.0.RELEASE</spring.version>
+    <spring.version>4.1.1.RELEASE</spring.version>
     <sukgu.version>0.0.9</sukgu.version>
     <surefire.junit.version>2.18.1</surefire.junit.version>
     <test.results.dir>failsafe-reports</test.results.dir>
@@ -434,14 +434,12 @@
           <failsOnError>true</failsOnError>
           <failOnViolation>true</failOnViolation>
           <violationSeverity>warning</violationSeverity>
-          <includeTestSourceDirectory>false</includeTestSourceDirectory>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
           <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
           <outputFile>${basedir}/target/checkstyle/checkstyle-output.xml</outputFile>
           <cacheFile>${basedir}/target/checkstyle/checkstyle-cachefile</cacheFile>
-          <excludes>**/resources/*</excludes>
-          <excludes>**/language/*</excludes>
-          <excludes>**/type/**/*</excludes>
+          <excludes>**/unit/**/*,**/load/**/*,**/resources/*,**/language/*</excludes>
         </configuration>
         <executions>
           <execution>

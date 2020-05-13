@@ -22,7 +22,7 @@ public abstract class AIUserTestCase extends MyApplicationTestCase {
 
     public void genericSearch() {
         LOG(true, "---------- Generic Search. Likelihood=%s ----------", HIGH_LEVEL);
-        webElementVisible(Constants.LOGO_ANCHOR);
+        webElementVisible(Constants.LOGO_ANCHOR_IMAGE);
         webAction(Constants.KEYWORD_INPUT, COMMON_SEARCH_TERM);
         webAction(Constants.SEARCH_INPUT);
         webElementTextEquals(combine(Constants.VARIABLE_BY_TEXT_ANCHOR, COMMON_SEARCH_TERM), COMMON_SEARCH_TERM);

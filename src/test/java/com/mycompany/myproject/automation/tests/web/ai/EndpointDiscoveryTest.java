@@ -40,7 +40,7 @@ public class EndpointDiscoveryTest extends MachineLearningTestCase {
         SCENARIO("Randomized Test of all @HREF Anchor Tags a web application");
 
         GIVEN("I am an authenticated user");
-        webElementExists(Constants.LOGO_ANCHOR);
+        webElementExists(Constants.LOGO_ANCHOR_IMAGE);
 
         WHEN("I get all the HREF links from the landing page");
         Set<String> originalDiscoveredLinks = collectVisibleHrefLinks();
