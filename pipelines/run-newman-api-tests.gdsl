@@ -1,0 +1,239 @@
+#!groovy
+import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+
+DEFAULT_EMAIL = 'anthonyl22@gmail.com'
+
+node {
+
+    def DEFAULT_ADMIN_JENKINS_USER_ID = 'ADD HERE'
+    def DEFAULT_PROJECT_URL = 'ADD HERE'
+    def COLLECTIONS_PATH = 'src/test/resources/postman'
+    def GLOBALS_ENVIRONMENT_FILE = 'globals.environment.json'
+
+    String collectionName = 'smoke'
+    def testEnvironment = 'test'
+    def branchName = 'origin/develop'
+
+    stage('Configuration?') {
+
+        try {
+            timeout(time: 1, unit: 'MINUTES') {
+
+                testEnvironment = input(
+                        [
+                                message   : 'Environment Selection',
+                                ok        : 'OK',
+                                parameters: [
+                                        choice(
+                                                name: 'testEnvironment',
+                                                choices: "${testEnvironment}\nstage\n",
+                                                description: 'Please select an environment'
+                                        )
+                                ]
+                        ]
+                )
+
+                collectionName = input(
+                        [
+                                message   : 'Collection Selection',
+                                ok        : 'OK',
+                                parameters: [
+                                        choice(
+                                                name: 'Collection',
+                                                choices: "${collectionName}\nregression\n",
+                                                description: 'Please select a service to test'
+                                        )
+                                ]
+                        ]
+                )
+
+            }
+
+        } catch (err) {
+            echo "----------------------------------------------------------------"
+            echo "No User response, switching to default branch '${branchName}'"
+            echo "----------------------------------------------------------------"
+        }
+
+    }
+
+    stage('Checkout') {
+        checkout([$class                           : 'GitSCM',
+                  branches                         : [[name: "*/master"]],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions                       : [[$class: 'CleanCheckout']],
+                  submoduleCfg                     : [],
+                  userRemoteConfigs                : [[credentialsId: DEFAULT_ADMIN_JENKINS_USER_ID, url: DEFAULT_PROJECT_URL]]
+        ])
+    }
+
+    stage('Branch?') {
+
+        try {
+
+            timeout(time: 60, unit: 'SECONDS') {
+
+                def branchNames = sh(
+                        script: 'git branch -r',
+                        returnStdout: true
+                ).trim()
+
+                branchName = input(
+                        [
+                                message   : 'Branch',
+                                ok        : 'OK',
+                                parameters: [
+                                        choice(
+                                                name: 'branchName',
+                                                choices: "${branchNames}",
+                                                description: 'Please select a branch'
+                                        )
+                                ]
+                        ]
+                )
+                branchName.trim()
+            }
+
+            if (branchName == 'none') {
+                error("Invalid selection(s)")
+            }
+
+        } catch (err) {
+            echo "------------------------------------------------------"
+            echo "No User response, defaulting to '${branchName}' branch"
+            echo "------------------------------------------------------"
+        }
+
+        collectionName = collectionName.toLowerCase().trim()
+
+    }
+
+    stage('Verify') {
+        parallel(
+                "Branch Name": {
+                    echo "Selected Branch Name '${branchName}'"
+                },
+                "Environment?": {
+                    echo "Building for '${testEnvironment}' Environment"
+                },
+                "Collection to Test?": {
+                    echo "Testing '${collectionName}' Collection"
+                },
+                "Gather Tester Info": {
+                    try {
+                        jenkinsUser = currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+                    } catch (err) {
+                        jenkinsUser = 'JenkinsSystem'
+                    }
+                    echo "Running as Tester '${jenkinsUser}'"
+                }
+        )
+    }
+
+    stage('Checkout') {
+        checkout([$class                           : 'GitSCM',
+                  branches                         : [[name: "${branchName}"]],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions                       : [[$class: 'CleanCheckout']],
+                  submoduleCfg                     : [],
+                  userRemoteConfigs                : [[credentialsId: DEFAULT_ADMIN_JENKINS_USER_ID, url: DEFAULT_PROJECT_URL]]
+        ])
+    }
+
+    stage('Run Tests') {
+        currentBuild.result = 'SUCCESS'
+        try {
+            timeout(time: 20, unit: 'MINUTES') {
+
+                sh 'npm install newman'
+                sh 'npm install newman-reporter-html'
+
+                dir("node_modules/newman/bin") {
+                    int currentResult = sh script: "./newman.js run '${env.WORKSPACE}/${COLLECTIONS_PATH}/collections/${collectionName}.collection.json' " +
+                            "-e '${env.WORKSPACE}/${COLLECTIONS_PATH}/environments/${testEnvironment}.environment.json' " +
+                            "-g '${env.WORKSPACE}/${COLLECTIONS_PATH}/environments/${GLOBALS_ENVIRONMENT_FILE}'", returnStatus: true
+                    if (currentResult > 0) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "Test failed - ${file}"
+                    }
+                }
+            }
+        } catch (FlowInterruptedException interruptEx) {
+            currentBuild.result = 'ABORTED'
+        } catch (err) {
+            currentBuild.result = 'UNSTABLE'
+            echo 'Test Execution Timed Out'
+        }
+    }
+
+    if (currentBuild.result != 'ABORTED') {
+
+        stage("Publish Reports") {
+            parallel(
+                    "Email": {
+                        sendEmailNotification(branchName, testEnvironment, currentBuild.result)
+                    }
+            )
+        }
+
+    }
+
+}
+
+/**
+ * Send an email based on runtime settings.
+ *
+ * @param testEnvironment test environment used
+ *  * @param branch branch selected
+ * @param currentResult current test build result
+ */
+private void sendEmailNotification(branchName, testEnvironment, currentResult) {
+
+    def subject = "${currentResult} :: Newman Api Tests"
+    def body = getBody(currentResult, branchName, testEnvironment, BUILD_NUMBER, BUILD_TIMESTAMP, env.BUILD_URL)
+    emailext(
+            recipientProviders: [
+                    [$class: 'DevelopersRecipientProvider'],
+                    [$class: 'CulpritsRecipientProvider'],
+                    [$class: 'RequesterRecipientProvider'],
+                    [$class: 'FailingTestSuspectsRecipientProvider'],
+                    [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
+                    [$class: 'UpstreamComitterRecipientProvider']
+            ],
+            attachLog: false,
+            subject: subject,
+            body: body,
+            attachmentsPattern: '**/target/failsafe-reports/testng-native-results/emailable-report.html',
+            to: DEFAULT_EMAIL,
+            mimeType: 'text/html',
+            replyTo: env.DEFAULT_REPLYTO
+    )
+}
+
+/**
+ *
+ *  Create beautified HTML based report
+ *
+ * @param result current build result
+ * @param branch branch selected
+ * @param testEnvironment test environment used
+ * @param buildNumber jenkins build number
+ * @param buildTime build timestamp
+ * @param buildUrl build url
+ * @return HTML report
+ */
+static String getBody(result, branch, testEnvironment, buildNumber, buildTime, buildUrl) {
+
+    String emailBody = "<!DOCTYPE html><html lang='en'>" +
+            "<head><meta charset='UTF-8'><style>table {margin-bottom: 40px;}table thead th {padding-right:60px; white-space: nowrap;} table tbody td.content {vertical-align:top;}</style></head>" +
+            "<body><table><thead>" +
+            "<th>Result</th><th>Branch</th><th>Environment</th><th>Build #</th><th>Build Time</th>" +
+            "</thead><tbody><tr>" +
+            "<td class='content'><a href='${buildUrl}allure' target='_blank'>${result}</a></td>" +
+            "<td class='content'>${branch}</td>" +
+            "<td class='content'>${testEnvironment}</td>" +
+            "<td class='content'><a href='${buildUrl}console' target='_blank'>${buildNumber}</a></td>" +
+            "<td class='content'>${buildTime}</td>" +
+            "</tr></tbody></table></body></html>"
+    return emailBody
+}

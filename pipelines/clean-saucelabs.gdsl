@@ -1,0 +1,86 @@
+#!groovy
+
+node {
+
+    def SAUCE_LABS_CREDENTIALS = 'ADD HERE'
+    def SAUCE_LABS_KEY = 'ADD HERE'
+    def NUMBER_OF_JOBS_TO_PROCESS = '20'
+    def idsToDelete
+
+    stage('Prepare') {
+        properties([
+                buildDiscarder(
+                        logRotator(
+                                artifactDaysToKeepStr: '3',
+                                artifactNumToKeepStr: '5',
+                                daysToKeepStr: '3',
+                                numToKeepStr: '5'
+                        )
+                ),
+                disableConcurrentBuilds()
+        ])
+    }
+
+    try {
+        timeout(time: 1, unit: 'MINUTES') {
+            currentBuild.result = 'SUCCESS'
+            stage('Get Active Sauce Jobs') {
+                try {
+                    def response = sh script: "curl https://${SAUCE_LABS_CREDENTIALS}:${SAUCE_LABS_KEY}@saucelabs.com/rest/v1/${SAUCE_LABS_CREDENTIALS}/jobs?limit=${NUMBER_OF_JOBS_TO_PROCESS}&full=false", returnStdout: true
+                    echo '----------------------------------------------------------------------------'
+                    echo response
+                    echo '----------------------------------------------------------------------------'
+
+                    idsToDelete = processResponse(response)
+                } catch (err) {
+                    currentBuild.result = 'UNSTABLE'
+                }
+            }
+
+            stage('Delete Jobs') {
+                try {
+                    idsToDelete.each { id ->
+                        println "Preparint to Delete Job ID=${id}"
+                        def response = sh script: "curl -X DELETE https://${SAUCE_LABS_CREDENTIALS}:${SAUCE_LABS_KEY}@saucelabs.com/rest/v1/${SAUCE_LABS_CREDENTIALS}/jobs/${id}", returnStdout: true
+                        echo '----------------------------------------------------------------------------'
+                        echo response
+                        echo '----------------------------------------------------------------------------'
+                    }
+                } catch (err) {
+                    currentBuild.result = 'UNSTABLE'
+                }
+            }
+
+        }
+    } catch (Exception e) {
+        echo "Build Timeout"
+        currentBuild.result = 'UNSTABLE'
+    }
+
+}
+
+/**
+ * Process response.
+ *
+ * @param jsonResponse
+ * @return job id
+ */
+private List processResponse(jsonResponse) {
+
+    if (jsonResponse == "") {
+        currentBuild.result = 'UNSTABLE'
+        println("Nothing found to parse.  Check Sauce Labs API or Jenkins")
+    } else {
+        println("Slurping = ${jsonResponse}")
+        try {
+            if (null != jsonResponse) {
+                def slurped = new groovy.json.JsonSlurper().parseText(jsonResponse)
+                def idsFound = slurped.collect { ele -> ele.id }
+                println("Splurped = ${idsFound}")
+                return idsFound
+            }
+        } catch (Exception e) {
+            e.printStackTrace()
+        }
+    }
+}
