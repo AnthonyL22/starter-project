@@ -1,0 +1,252 @@
+#!groovy
+import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+
+SLACK_TOKEN = 'ADD_HERE'
+SLACK_CHANNEL = 'ADD_HERE'
+jenkinsUser = 'JenkinsSystem'
+
+node {
+
+    def BITBUCKET_CREDENTIALS_ID = 'ADD_HERE'
+    def BITBUCKET_SOURCE_PROJECT = 'ADD_HERE'
+    def JMETER_PATH = 'src/test/resources/jmeter'
+    def testPlan = 'my-jmeter-test-plan.jmx'
+    def branchName
+    def numberOfThreads
+    def rampUpPeriod
+    def loopCount
+
+    stage('Configuration?') {
+
+        properties([
+                buildDiscarder(
+                        logRotator(
+                                artifactDaysToKeepStr: '3',
+                                artifactNumToKeepStr: '5',
+                                daysToKeepStr: '3',
+                                numToKeepStr: '5'
+                        )
+                ),
+                disableConcurrentBuilds()
+        ])
+
+        stage('Selections') {
+
+            testPlan = input(
+                    [
+                            message   : 'Test Plan Selection',
+                            ok        : 'OK',
+                            parameters: [
+                                    choice(
+                                            name: 'testPlan',
+                                            choices: "${testPlan}\nanther-test-plan.jmx\n",
+                                            description: 'Please select a performance test plan'
+                                    )
+                            ]
+                    ]
+            )
+
+            numberOfThreads =
+                    input id: 'numberOfThreads',
+                            message: 'Number of Threads (users)',
+                            ok: 'RUN',
+                            parameters: [
+                                    string(description: '# of Users',
+                                            name: 'numberOfThreads',
+                                            defaultValue: "1",
+                                            trim: true)
+                            ]
+
+            rampUpPeriod =
+                    input id: 'rampUpPeriod',
+                            message: 'Ramp-up period (seconds)',
+                            ok: 'RUN',
+                            parameters: [
+                                    string(description: 'Ramp Up in seconds',
+                                            name: 'rampUpPeriod',
+                                            defaultValue: "60",
+                                            trim: true)
+                            ]
+
+            loopCount =
+                    input id: 'loopCount',
+                            message: 'Loop Count',
+                            ok: 'RUN',
+                            parameters: [
+                                    string(description: 'Test iteration count',
+                                            name: 'loopCount',
+                                            defaultValue: "1",
+                                            trim: true)
+                            ]
+
+        }
+
+        stage('Checkout') {
+            checkout([$class                           : 'GitSCM',
+                      branches                         : [[name: "*/master"]],
+                      doGenerateSubmoduleConfigurations: false,
+                      extensions                       : [[$class: 'CleanCheckout']],
+                      submoduleCfg                     : [],
+                      userRemoteConfigs                : [[credentialsId: BITBUCKET_CREDENTIALS_ID, url: BITBUCKET_SOURCE_PROJECT]]
+            ])
+        }
+
+        stage('Branch?') {
+
+            try {
+
+                timeout(time: 1, unit: 'MINUTES') {
+
+                    def branchNames = sh(
+                            script: 'git branch -r',
+                            returnStdout: true
+                    ).trim()
+
+                    branchName = input(
+                            [
+                                    message   : 'Branch',
+                                    ok        : 'OK',
+                                    parameters: [
+                                            choice(
+                                                    name: 'branchName',
+                                                    choices: "${branchNames}",
+                                                    description: 'Please select a branch'
+                                            )
+                                    ]
+                            ]
+                    )
+                    branchName.trim()
+                }
+
+                if (branchName == 'none') {
+                    error("Invalid selection(s)")
+                }
+
+            } catch (err) {
+                echo "------------------------------------------------------"
+                echo "No User response, switching to default branch '${branchName}'"
+                echo "------------------------------------------------------"
+            }
+
+        }
+
+    }
+
+    stage('Checkout') {
+        checkout([$class                           : 'GitSCM',
+                  branches                         : [[name: "*/master"]],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions                       : [[$class: 'CleanCheckout']],
+                  submoduleCfg                     : [],
+                  userRemoteConfigs                : [[credentialsId: BITBUCKET_CREDENTIALS_ID, url: BITBUCKET_SOURCE_PROJECT]]
+        ])
+    }
+
+    stage('Verify') {
+        parallel(
+                "Branch Name": {
+                    echo "Selected Branch Name '${branchName}'"
+                },
+                "Test Plan?": {
+                    echo "Running test plan '${testPlan}'"
+                },
+                "Test Parameters": {
+                    echo "Running '${numberOfThreads}' users, '${loopCount}' test iterations, with ramp up time of '${rampUpPeriod}' between users"
+                },
+                "Gather Tester Info": {
+                    try {
+                        jenkinsUser = currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+                    } catch (err) {
+                        jenkinsUser = 'JenkinsSystem'
+                    }
+                    echo "Running as Tester '${jenkinsUser}'"
+                }
+        )
+    }
+
+    stage('Checkout') {
+        checkout([$class                           : 'GitSCM',
+                  branches                         : [[name: "${branchName}"]],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions                       : [[$class: 'CleanCheckout']],
+                  submoduleCfg                     : [],
+                  userRemoteConfigs                : [[credentialsId: BITBUCKET_CREDENTIALS_ID, url: BITBUCKET_SOURCE_PROJECT]]
+        ])
+    }
+
+    stage('Setup JMeter') {
+        sh script: "wget -c http://ftp.ps.pl/pub/apache//jmeter/binaries/apache-jmeter-5.2.1.tgz"
+        sh script: "tar -xf apache-jmeter-5.2.1.tgz"
+    }
+
+    stage('Run Tests') {
+        currentBuild.result = 'SUCCESS'
+        try {
+            timeout(time: 60, unit: 'MINUTES') {
+                dir('apache-jmeter-5.2.1/bin') {
+                    int currentResult = sh script: "`./jmeter -n -t '${env.WORKSPACE}/${JMETER_PATH}/${testPlan}' -l ${env.WORKSPACE}/${JMETER_PATH}/results/results.csv -e -o ${env.WORKSPACE}/${JMETER_PATH}/results -Jthreads=${numberOfThreads} -Jloops=${loopCount} -Jrampup=${rampUpPeriod}`", returnStatus: true
+                    if (currentResult > 0) {
+                        currentBuild.result = 'UNSTABLE'
+                    }
+                }
+            }
+        } catch (FlowInterruptedException interruptEx) {
+            currentBuild.result = 'ABORTED'
+        } catch (err) {
+            currentBuild.result = 'UNSTABLE'
+            echo 'Test Execution Timed Out'
+        }
+    }
+
+    if (currentBuild.result != 'ABORTED') {
+
+        stage("Publish Reports") {
+            parallel(
+                    "Generate Performance Report": {
+                        perfReport compareBuildPrevious: true,
+                                errorFailedThreshold: 50,
+                                errorUnstableThreshold: 20,
+                                relativeFailedThresholdNegative: 1.0,
+                                relativeFailedThresholdPositive: 2.0,
+                                relativeUnstableThresholdNegative: 1.0,
+                                relativeUnstableThresholdPositive: 10.0,
+                                sourceDataFiles: '**/results.csv'
+                    },
+                    "Slack": {
+                        sendSlackNotification(branchName, testPlan, currentBuild.result, 'APP Performance', env.BUILD_URL)
+                    }
+            )
+        }
+
+    }
+
+}
+
+/**
+ * Send a SLACK notification based on runtime settings.
+ *
+ * @param branch branch selected
+ * @param testPlan performance test plan
+ * @param result current build result
+ * @param currentResult current build result
+ * @param description service endpoint identifier
+ * @param buildUrl build url
+ */
+private void sendSlackNotification(branch, testPlan, currentResult, description, buildUrl) {
+
+    String slackColor = '#18de18'
+    if (currentResult == "FAILURE") {
+        slackColor = '#FF0000'
+    } else if (currentResult == "UNSTABLE") {
+        slackColor = '#FFFF00'
+    } else if (currentResult == "ABORTED") {
+        slackColor = '#FFA500'
+    }
+
+    def message = "${description}\nTest Plan: ${testPlan}\nBranch: '${branch}'\nUser: ${jenkinsUser}\n${buildUrl}console"
+    slackSend channel: SLACK_CHANNEL,
+            color: slackColor,
+            message: message,
+            token: SLACK_TOKEN
+
+}
