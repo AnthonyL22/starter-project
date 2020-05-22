@@ -128,5 +128,4 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
         return scrubbed;
     }
 
-
 }
