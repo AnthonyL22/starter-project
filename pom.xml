@@ -44,7 +44,7 @@
     <allure-testng.version>2.12.1</allure-testng.version>
     <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
     <aspectj.version>1.8.10</aspectj.version>
-    <assert-microservice.version>1.0.2</assert-microservice.version>
+    <assert-microservice.version>1.0.3</assert-microservice.version>
     <browserstack-local-java.version>1.0.3</browserstack-local-java.version>
     <browserstack.version>1.0.0</browserstack.version>
     <bson.version>2.3</bson.version>
