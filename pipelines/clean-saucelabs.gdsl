@@ -2,8 +2,8 @@
 
 node {
 
-    def SAUCE_LABS_CREDENTIALS = 'ADD HERE'
-    def SAUCE_LABS_KEY = 'ADD HERE'
+    def SAUCE_LABS_CREDENTIALS = 'ADD_HERE_FOR_YOU'
+    def SAUCE_LABS_KEY = 'ADD_HERE_FOR_YOU'
     def NUMBER_OF_JOBS_TO_PROCESS = '20'
     def idsToDelete
 

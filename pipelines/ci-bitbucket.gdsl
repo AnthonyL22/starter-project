@@ -1,6 +1,6 @@
 #!groovy
 
-DEFAULT_EMAIL = 'ADD HERE'
+DEFAULT_EMAIL = 'ADD_HERE_FOR_YOU'
 
 node {
 
