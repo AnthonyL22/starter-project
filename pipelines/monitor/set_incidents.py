@@ -1,7 +1,7 @@
 import json
 import requests
 
-API_KEY = 'idQeDCv6Hnsfwf1Itpu5'
+API_KEY = 'gwZM1vNTdxZuIN2YUhp9'
 ROOT_URL = 'http://localhost/api/v1/'
 ENDPOINT = 'incidents'
 

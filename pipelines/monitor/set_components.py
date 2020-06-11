@@ -6,7 +6,7 @@ import requests
 root_component_id = ""
 root_component_status = ""
 
-API_KEY = 'HaPZPXx2qiYlA4wm7PYr'
+API_KEY = 'gwZM1vNTdxZuIN2YUhp9'
 ROOT_URL = 'http://localhost/api/v1/'
 ENDPOINT = 'components'
 

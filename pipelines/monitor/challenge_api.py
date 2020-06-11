@@ -1,24 +1,28 @@
+import json
 import logging
-import sys
-
 import os
+import sys
+from datetime import datetime
 
 import requests
 import urllib3
-from datetime import datetime
 
-import get_incidents as get_incidents
 import get_components as components
-import set_incidents as set_incidents
-import siteminder_auth as site_minder
+import get_incidents as get_incidents
 import notification as notify
+import set_incidents as set_incidents
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(urllib3.exceptions.InsecurePlatformWarning)
 
-sm_protected = False
-root_url = ""
+root_url = ''
+headers = ''
+is_post = False
+body = ''
 root_component_id = -1
+
+access_token = ''
+vds_id = ''
 
 EMAIL_LOG_FILENAME = 'email_sent.log'
 DEFAULT_TIMEOUT = 60
@@ -27,6 +31,8 @@ INCIDENT_VISIBLE = 1
 
 EXPERIENCING_ISSUES_MESSAGE = "Experiencing {0!s} status errors :: {1!s}"
 CONTINUALLY_EXPERIENCING_ISSUES_MESSAGE = "Continually experiencing {0!s} status errors :: {1!s}"
+
+MAX_RESPONSE_TIME = 10
 
 # Incident Status'
 SCHEDULED_INCIDENT_STATUS = 0
@@ -79,17 +85,38 @@ PWC monitored endpoint UPTime Interrogation.
 """
 
 
-def challenge_uri():
+def challenge_uri(self=None):
     try:
+        access_token = ''
+        vds_id = ''
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), EMAIL_LOG_FILENAME)
         logging.basicConfig(filename=filename, level=logging.INFO)
-        if not sm_protected:
-            response = requests.get(root_url, verify=False, timeout=DEFAULT_TIMEOUT)
-            response.raise_for_status()
-            return report_incident_and_component_status_from_http_response(response)
+        if not headers:
+            if is_post:
+                response = requests.post(root_url, verify=False, timeout=DEFAULT_TIMEOUT)
+            else:
+                response = requests.get(root_url, verify=False, timeout=DEFAULT_TIMEOUT)
         else:
-            response = site_minder.HealthCheck(root_url).current_response
+            if is_post:
+                if body:
+                    response = requests.post(root_url, headers=headers, json=body, verify=False,
+                                             timeout=DEFAULT_TIMEOUT)
+                    response_dict = json.loads(response.text)
+                    if 'payload' in response_dict:
+                        payload_dict = response_dict['payload']
+                        if 'accessToken' in payload_dict:
+                            access_token = response_dict['payload']['accessToken']
+                            vds_id = response_dict['payload']['vdsId']
+                else:
+                    response = requests.post(root_url, headers=headers, verify=False, timeout=DEFAULT_TIMEOUT)
+            else:
+                response = requests.get(root_url, headers=headers, verify=False, timeout=DEFAULT_TIMEOUT)
+        response.raise_for_status()
+        if access_token != "":
+            return report_incident_and_component_status_from_http_response(response), access_token, vds_id
+        else:
             return report_incident_and_component_status_from_http_response(response)
+
     except requests.ConnectionError as errCE:
 
         ######################################################################
@@ -194,7 +221,7 @@ def report_incident_and_component_status_from_timestamps(timestamp_in_violation,
 def report_incident_and_component_status_from_http_response(response):
 
     if 200 <= response.status_code < 300:
-        if response.elapsed.seconds > 10:
+        if response.elapsed.seconds > MAX_RESPONSE_TIME:
 
             incident_message = "Latent response time: {0!s}s. reported :: {1!s}". \
                 format(response.elapsed.seconds, root_url)

@@ -2,7 +2,7 @@ import json
 import requests
 import challenge_api as challenge
 
-API_KEY = 'idQeDCv6Hnsfwf1Itpu5'
+API_KEY = 'gwZM1vNTdxZuIN2YUhp9'
 ROOT_URL = 'http://localhost/api/v1/'
 ENDPOINT = 'incidents?per_page=30000'
 DELETION_ENDPOINT = 'incidents'
@@ -87,7 +87,7 @@ def has_failed_last_two_times_with_identical_failure(sorted_list):
             return True
         else:
             return False
-    except IndexError as err:
+    except:
         return False
 
 
@@ -115,10 +115,10 @@ def delete_incident_by_incident_id(incident_id):
 #   Delete all incidents in the given incident list
 ######################################################################
 def delete_incident_list(incident_list):
-        if incident_list:
-            for i, incident_id in enumerate(d['id'] for d in incident_list):
-                print "Deleting Incident ID={0!s}".format(str(incident_id))
-                delete_incident_by_incident_id(incident_id)
+    if incident_list:
+        for i, incident_id in enumerate(d['id'] for d in incident_list):
+            print "Deleting Incident ID={0!s}".format(str(incident_id))
+            delete_incident_by_incident_id(incident_id)
 
 
 if __name__ == "__main__":
