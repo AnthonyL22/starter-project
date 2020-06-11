@@ -1,8 +1,8 @@
 #!groovy
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 
-SLACK_TOKEN = 'ADD_HERE'
-SLACK_CHANNEL = 'ADD_HERE'
+SLACK_TOKEN = 'ADD_HERE_FOR_YOU'
+SLACK_CHANNEL = 'ADD_HERE_FOR_YOU'
 jenkinsUser = 'JenkinsSystem'
 
 node {

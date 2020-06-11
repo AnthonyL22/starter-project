@@ -2,7 +2,7 @@
 
 ALERT_VIA_EMAIL = 'anthonyl22@gamil.com'
 ALERT_VIA_SLACK = '#sample-channel'
-SLACK_TOKEN = 'xOumj1Fxdlm59bv263oFHT86'
+SLACK_TOKEN = 'ADD_HERE_FOR_YOU'
 
 node {
 

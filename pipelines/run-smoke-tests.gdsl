@@ -1,7 +1,6 @@
 #!groovy
 
 DEFAULT_EMAIL = 'anthonyl22@gmail.com'
-
 node {
 
     def BITBUCKET_CREDENTIALS_ID = 'sample'
