@@ -19,7 +19,7 @@ import static org.junit.Assert.assertFalse;
 
 public class SourceAutomationStandards {
 
-    private Collection<File> allJavaClasses = new LinkedList<>();
+    private final Collection<File> allJavaClasses = new LinkedList<>();
 
     @Before
     public void setUp() {
@@ -49,7 +49,7 @@ public class SourceAutomationStandards {
             packageName = StringUtils.substringAfter(packageName, "src" + File.separator);
             packageName = StringUtils.substringBeforeLast(packageName, File.separator);
             boolean packageContainsUpperCaseChars = !packageName.equals(packageName.toLowerCase());
-            Assert.assertFalse("Package name shouldn't contain capital letters.  Please review package='" + packageName + "'", packageContainsUpperCaseChars);
+            assertFalse("Package name shouldn't contain capital letters.  Please review package='" + packageName + "'", packageContainsUpperCaseChars);
         });
     }
 
@@ -63,7 +63,7 @@ public class SourceAutomationStandards {
             packageName = StringUtils.substringAfter(packageName, "src" + File.separator);
             packageName = StringUtils.substringBeforeLast(packageName, File.separator);
             Matcher m = specialCharPattern.matcher(packageName);
-            Assert.assertFalse("Package name shouldn't contain special chars.  Please review package='" + packageName + "'", m.find());
+            assertFalse("Package name shouldn't contain special chars.  Please review package='" + packageName + "'", m.find());
         });
     }
 
@@ -72,11 +72,8 @@ public class SourceAutomationStandards {
 
         allJavaClasses.forEach(javaFile -> {
             List<String> testContents = readClassContents(javaFile);
-            testContents.forEach(testContent -> {
-                if (testContent.contains("System") && testContent.contains("out")) {
-                    assertFalse("JDK Native 'System' class usages present in test='" + javaFile.getName() + "'", testContent.contains("System"));
-                }
-            });
+            boolean foundSystemOut = testContents.stream().anyMatch(code -> StringUtils.contains(code, "System") && StringUtils.contains(code, "out"));
+            Assert.assertFalse("JDK Native 'System' class usages present in test='" + javaFile.getName() + "'", foundSystemOut);
         });
 
     }
@@ -86,11 +83,8 @@ public class SourceAutomationStandards {
 
         allJavaClasses.forEach(javaFile -> {
             List<String> testContents = readClassContents(javaFile);
-            testContents.forEach(testContent -> {
-                if (testContent.contains("Thread") && testContent.contains("sleep")) {
-                    assertFalse("'Thread.sleep' is present in test='" + javaFile.getName() + "'", testContent.contains("Thread") && testContent.contains("sleep"));
-                }
-            });
+            boolean foundThreadSleep = testContents.stream().anyMatch(code -> StringUtils.contains(code, "Thread") && StringUtils.contains(code, "sleep"));
+            Assert.assertFalse("'Thread.sleep' is present in test='" + javaFile.getName() + "'", foundThreadSleep);
         });
 
     }
