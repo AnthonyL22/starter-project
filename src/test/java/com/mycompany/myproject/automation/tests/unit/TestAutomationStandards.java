@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TestAutomationStandards {
 
@@ -32,7 +33,7 @@ public class TestAutomationStandards {
                         .collect(Collectors.toList());
     }
 
-    @Test()
+    @Test
     public void testFirstLetterCapitalizedTest() {
 
         allTestFiles.forEach(testFile -> {
@@ -42,7 +43,7 @@ public class TestAutomationStandards {
 
     }
 
-    @Test()
+    @Test
     public void testPackageNamingCapitalLetters() {
 
         allTestFiles.forEach(individual -> {
@@ -54,7 +55,7 @@ public class TestAutomationStandards {
         });
     }
 
-    @Test()
+    @Test
     public void testPackageNamingSpecialChars() {
 
         Pattern specialCharPattern = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
@@ -69,7 +70,7 @@ public class TestAutomationStandards {
 
     }
 
-    @Test()
+    @Test
     public void testNameDuplicated() {
 
         allTestFiles.forEach(testFile -> {
@@ -119,6 +120,25 @@ public class TestAutomationStandards {
             Assert.assertTrue("WHEN Gherkin logging is present for test='" + testFile.getName() + "'", foundWhen);
             boolean foundThen = testContents.stream().anyMatch(code -> StringUtils.contains(code, "THEN"));
             Assert.assertTrue("THEN Gherkin logging is present for test='" + testFile.getName() + "'", foundThen);
+        });
+
+    }
+
+    @Test
+    public void testDeclarativeGherkin() {
+
+        allTestFiles.forEach(testFile -> {
+            List<String> testContents = readClassContents(testFile);
+            long numberOfFeatures = IntStream.range(0, testContents.size()).filter(index -> StringUtils.contains(testContents.get(index), "FEATURE(")).count();
+            Assert.assertEquals("FEATURE Gherkin logging is present for test='" + testFile.getName() + "'", numberOfFeatures, 1);
+            long numberOfScenarios = IntStream.range(0, testContents.size()).filter(index -> StringUtils.contains(testContents.get(index), "SCENARIO(")).count();
+            Assert.assertEquals("SCENARIO Gherkin logging is present for test='" + testFile.getName() + "'", numberOfScenarios, 1);
+            long numberOfGivens = IntStream.range(0, testContents.size()).filter(index -> StringUtils.contains(testContents.get(index), "GIVEN(")).count();
+            Assert.assertEquals("GIVEN Gherkin logging is present for test='" + testFile.getName() + "'", numberOfGivens, 1);
+            long numberOfWhens = IntStream.range(0, testContents.size()).filter(index -> StringUtils.contains(testContents.get(index), "WHEN(")).count();
+            Assert.assertEquals("WHEN Gherkin logging is present for test='" + testFile.getName() + "'", numberOfWhens, 1);
+            long numberOfThens = IntStream.range(0, testContents.size()).filter(index -> StringUtils.contains(testContents.get(index), "THEN(")).count();
+            Assert.assertEquals("THEN Gherkin logging is present for test='" + testFile.getName() + "'", numberOfThens, 1);
         });
 
     }
