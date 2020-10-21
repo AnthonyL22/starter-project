@@ -25,7 +25,7 @@ up and running:
 1. [Clone this Starter Project](https://github.com/AnthonyL22/starter-project.git)
 2. Open command prompt (Unix users use sudo access if possible)
 3. Perform *mvn clean install -U*
-4. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=prod* on this project
+4. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=prod*
 
 ## To Run in IntelliJ
 1. Open IntelliJ
