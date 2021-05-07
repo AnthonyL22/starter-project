@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,6 +32,37 @@ public class TestAutomationStandards {
                         .listFiles(directory, new String[] {"java"}, true).stream().filter(file -> !StringUtils.containsIgnoreCase(file.getAbsolutePath(), "unit")
                                         && !StringUtils.containsIgnoreCase(file.getAbsolutePath(), "load") && !StringUtils.containsIgnoreCase(file.getAbsolutePath(), "headless"))
                         .collect(Collectors.toList());
+    }
+
+    @Test()
+    public void testMoreThanZeroFilesScanned() {
+
+        Assert.assertTrue("Verify > 0 files scanned/unit tested", allTestFiles.size() > 0);
+
+    }
+
+    @Test()
+    public void testNoJUnitUsage() {
+
+        String toFind = "org.junit";
+        allTestFiles.forEach(testFile -> {
+            List<String> testContents = readClassContents(testFile);
+            Optional<String> foundMatch = testContents.stream().filter(line -> StringUtils.containsIgnoreCase(line, toFind)).findAny();
+            Assert.assertFalse("Verify no JUnit usages in test classes class='" + testFile.getName() + "'", foundMatch.isPresent());
+        });
+
+    }
+
+    @Test()
+    public void testNoDoubleSemiColon() {
+
+        String toFind = ";;";
+        allTestFiles.forEach(testFile -> {
+            List<String> testContents = readClassContents(testFile);
+            Optional<String> foundMatch = testContents.stream().filter(line -> StringUtils.containsIgnoreCase(line, toFind)).findAny();
+            Assert.assertFalse("Verify no double semicolons for class='" + testFile.getName() + "'", foundMatch.isPresent());
+        });
+
     }
 
     @Test

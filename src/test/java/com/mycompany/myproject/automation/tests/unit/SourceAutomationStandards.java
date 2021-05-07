@@ -12,14 +12,16 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
 
 public class SourceAutomationStandards {
 
-    private final Collection<File> allJavaClasses = new LinkedList<>();
+    private Collection<File> allJavaClasses = new LinkedList<>();
 
     @Before
     public void setUp() {
@@ -27,7 +29,38 @@ public class SourceAutomationStandards {
         Path resourceDirectory = Paths.get("src", "main", "java");
         String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         File directory = new File(absolutePath);
-        allJavaClasses.addAll(FileUtils.listFiles(directory, new String[] {"java"}, true));
+        allJavaClasses = FileUtils.listFiles(directory, new String[] {"java"}, true).stream().filter(file -> !StringUtils.containsIgnoreCase(file.getAbsolutePath(), "idf"))
+                        .collect(Collectors.toList());
+
+    }
+
+    @Test()
+    public void testMoreThanZeroFilesScanned() {
+
+        Assert.assertTrue("Verify > 0 files scanned/unit tested", allJavaClasses.size() > 0);
+
+    }
+
+    @Test()
+    public void testNoJUnitUsage() {
+
+        String toFind = "org.junit";
+        allJavaClasses.forEach(javaFile -> {
+            List<String> testContents = readClassContents(javaFile);
+            Optional<String> foundMatch = testContents.stream().filter(line -> StringUtils.containsIgnoreCase(line, toFind)).findAny();
+            Assert.assertFalse("Verify no JUnit usages in test classes class='" + javaFile.getName() + "'", foundMatch.isPresent());
+        });
+
+    }
+
+    @Test()
+    public void testNoDoubleSemiColon() {
+
+        allJavaClasses.forEach(javaFile -> {
+            List<String> testContents = readClassContents(javaFile);
+            Optional<String> foundDouble = testContents.stream().filter(line -> StringUtils.containsIgnoreCase(line, ";;")).findAny();
+            Assert.assertFalse("Verify no double semicolons for class='" + javaFile.getName() + "'", foundDouble.isPresent());
+        });
 
     }
 
