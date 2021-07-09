@@ -45,8 +45,6 @@
     <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
     <aspectj.version>1.8.10</aspectj.version>
     <assert-microservice.version>1.0.5</assert-microservice.version>
-    <browserstack-local-java.version>1.0.3</browserstack-local-java.version>
-    <browserstack.version>1.0.0</browserstack.version>
     <bson.version>2.3</bson.version>
     <commons-codec.version>1.9</commons-codec.version>
     <commons-lang3.version>3.4</commons-lang3.version>
@@ -93,11 +91,6 @@
     <testng.version>6.9.8</testng.version>
   </properties>
   <dependencies>
-    <dependency>
-      <groupId>com.browserstack</groupId>
-      <artifactId>browserstack-local-java</artifactId>
-      <version>${browserstack-local-java.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
@@ -365,23 +358,6 @@
         <version>${allure-maven.version}</version>
       </plugin>
       <plugin>
-        <groupId>com.browserstack</groupId>
-        <artifactId>automate-maven-plugin</artifactId>
-        <version>${browserstack.version}</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <complianceLevel>${java.version}</complianceLevel>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>${maven.findbugs.plugin.version}</version>
@@ -551,28 +527,6 @@
               <includes>
                 <include>**/unit/*Standards.java</include>
               </includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>${exec-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>generate-extended-parameters-input</id>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <phase>install</phase>
-            <configuration>
-              <arguments>
-                <argument>com.mycompany.myproject.automation.frameworksupport.Groups</argument>
-                <argument>${project.build.outputDirectory}</argument>
-                <argument>group.properties</argument>
-              </arguments>
-              <mainClass>com.pwc.core.framework.ci.ContinuousIntegrationGrouper</mainClass>
             </configuration>
           </execution>
         </executions>
