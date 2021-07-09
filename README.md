@@ -13,7 +13,7 @@ feature requests. Anything else, such as questions for help in using the library
 
 # Prerequisites
 
-1. Java 1.8
+1. Java 1.8, 11.0, 13.0
 2. Maven 3.x
 3. Chrome
 
