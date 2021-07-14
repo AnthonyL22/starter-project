@@ -15,7 +15,7 @@ feature requests. Anything else, such as questions for help in using the library
 
 1. Java 1.8, 11.0, 13.0
 2. Maven 3.x
-3. Chrome
+3. Chrome (latest)
 
 # Quick Start
 
@@ -23,14 +23,15 @@ Once the prerequisites are installed and configured follow these 3 simple instru
 up and running:
 
 1. [Clone this Starter Project](https://github.com/AnthonyL22/starter-project.git)
-2. Open command prompt (Unix users use sudo access if possible)
-3. Perform *mvn clean install -U*
-4. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=prod*
+2. Perform *mvn clean install -U*
+3. Perform *mvn clean install -Psingle -Dtest.name=BasicTest -Dtest.env=prod*
 
 ## To Run in IntelliJ
 1. Open IntelliJ
-2. Add default runtime configuration for TestNG VM option of *-Dtest.env=prod*
-3. Run test in Debug mode.
+2. Open `pom.xml` file 
+3. Right click on pom.xml file > select **Maven** > select **Reload project** option
+4. Add default runtime configuration for TestNG VM option of *-Dtest.env=prod*
+5. Right click and run test
 
 # Code Formatter
 The **mvn clean install** Maven command runs a common code formatter plugin.  This plugin ensures all code is formatted 
