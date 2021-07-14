@@ -72,7 +72,6 @@
     <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
     <mongo-java-driver.version>3.6.3</mongo-java-driver.version>
     <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
-    <ojdbc6.version>11.2.0.3</ojdbc6.version>
     <poi-ooxml.version>3.15</poi-ooxml.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <restassured.version>2.9.0</restassured.version>
@@ -184,11 +183,6 @@
       <groupId>net.sf.jazzy</groupId>
       <artifactId>jazzy</artifactId>
       <version>${jazzy.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>oracle</groupId>
-      <artifactId>ojdbc6</artifactId>
-      <version>${ojdbc6.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
