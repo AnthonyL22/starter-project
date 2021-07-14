@@ -38,11 +38,10 @@ public class BasicTest extends MyApplicationTestCase {
         webElementVisible(Constants.LOGO_ANCHOR_IMAGE);
 
         WHEN("I do something");
-        redirect("/help");
-        webAction(Constants.HELP_ANCHOR);
+        webAction(Constants.LOGO_ANCHOR_IMAGE);
 
         THEN("Something happens as expected");
-        webElementExists(Constants.HELP_ANCHOR);
+        webElementExists(Constants.LOGO_ANCHOR_IMAGE);
 
     }
 

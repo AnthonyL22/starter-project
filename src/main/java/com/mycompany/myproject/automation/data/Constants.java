@@ -15,11 +15,10 @@ public final class Constants {
     public static final String ADVANCED_SEARCH_URL = "/#advancedsearch";
 
     // IMAGE Elements
-    public static final String LOGO_ANCHOR_IMAGE = "//img[@class='logo']";
+    public static final String LOGO_ANCHOR_IMAGE = "//img[contains(@src, 'logo')]";
 
     // ANCHOR Elements
     public static final String VARIABLE_BY_TEXT_ANCHOR = "//a[text()='%s']";
-    public static final String HELP_ANCHOR = "//a[contains(@href, 'help')]";
     public static final String QUICK_STATS_ANCHOR = "QUICK STATS";
 
     // INPUT Elements
