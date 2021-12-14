@@ -43,6 +43,7 @@
     <allure-maven.version>2.10.0</allure-maven.version>
     <allure-testng.version>2.12.1</allure-testng.version>
     <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+    <ant-contrib.version>1.0b3</ant-contrib.version>
     <aspectj.version>1.8.10</aspectj.version>
     <assert-microservice.version>1.0.5</assert-microservice.version>
     <bson.version>2.3</bson.version>
@@ -62,6 +63,7 @@
     <jsoup.version>1.8.2</jsoup.version>
     <logging-microservice.version>1.0.9</logging-microservice.version>
     <lombok.version>1.18.4</lombok.version>
+    <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
     <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>2.9</maven-dependency-plugin.version>
     <maven-failsafe-plugin.version>2.19</maven-failsafe-plugin.version>
@@ -753,6 +755,67 @@
                     <include>**/Test*.java</include>
                   </includes>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${maven-antrun-plugin.version}</version>
+            <dependencies>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>${ant-contrib.version}</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>rerun-failed</id>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <taskdef classpathref="maven.plugin.classpath" resource="net/sf/antcontrib/antcontrib.properties" />
+                    <if>
+                      <available file="${project.build.directory}/failsafe-reports/testng-failed.xml" />
+                      <then>
+                        <echo>First Rerunning Failed Tests</echo>
+                        <exec executable="/bin/bash">
+                          <arg value="mvn" />
+                          <arg value="install" />
+                          <arg value="-Prerun-failed" />
+                          <arg value="-Dskip.surefire.tests=true" />
+                          <arg value="-Dfindbugs.skip=true" />
+                          <arg value="failsafe:verify" />
+                          <arg value="-Dtest.env=${test.env}" />
+                        </exec>
+                      </then>
+                    </if>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${exec-maven-plugin.version}</version>
+            <configuration>
+              <mainClass>com.rccl.digitalcommerce.cruiseplanner.automation.frameworksupport.ThreadCountMavenHelper</mainClass>
+              <arguments>
+                <argument>1</argument>
+              </arguments>
+            </configuration>
+            <executions>
+              <execution>
+                <id>prepare-testng</id>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <phase>install</phase>
               </execution>
             </executions>
           </plugin>
