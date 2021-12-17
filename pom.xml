@@ -52,7 +52,7 @@
     <commons.io.version>2.4</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commonsdbcp2.version>2.0</commonsdbcp2.version>
-    <core-microservice.version>2.0.80</core-microservice.version>
+    <core-microservice.version>2.0.86</core-microservice.version>
     <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
     <format-maven-plugin.version>2.0.1</format-maven-plugin.version>
     <guava.version>29.0-jre</guava.version>
@@ -79,7 +79,7 @@
     <restassured.version>2.9.0</restassured.version>
     <runner-microservice.version>1.0.2</runner-microservice.version>
     <runners>3</runners>
-    <runtime-microservice.version>1.0.35</runtime-microservice.version>
+    <runtime-microservice.version>1.0.46</runtime-microservice.version>
     <selenium.version>3.141.59</selenium.version>
     <skip.profile>true</skip.profile>
     <skip.surefire.tests>false</skip.surefire.tests>
