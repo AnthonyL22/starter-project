@@ -15,8 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.json.XML;
 import org.jsoup.Jsoup;
-import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -47,9 +45,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Level;
 
-import static com.pwc.assertion.AssertService.assertEquals;
 import static com.pwc.assertion.AssertService.assertFail;
 import static com.pwc.logging.service.LoggerService.LOG;
 
@@ -276,43 +272,6 @@ public abstract class MyApplicationTestCase extends WebTestCase {
             LOG(true, "Unable to get random list due to reason='%s'", e);
             return listValues;
         }
-    }
-
-    /**
-     * Verify if the Console contains entries greater than or equal to the allowable Level.  This is a filtered list
-     * for this specific project.
-     *
-     * @param elementIdentifier WebElement to wait for to display before reading Console tab data
-     * @param filterLevel       {@link Level} the level to filter the log entries
-     */
-    protected void verifyConsoleRequests(final String elementIdentifier, final Level filterLevel) {
-
-        LogEntries consoleEntries = webDiagnosticsConsoleRequests(elementIdentifier, filterLevel);
-        long numberOfConsoleErrors = consoleEntries.spliterator().getExactSizeIfKnown() < 0 ? 0 : consoleEntries.spliterator().getExactSizeIfKnown();
-        assertEquals("Console contains %s entries at Log Level = %s", numberOfConsoleErrors, 0L, numberOfConsoleErrors, filterLevel.getName());
-    }
-
-    /**
-     * Harvest filtered list of Console requests.
-     *
-     * @param elementIdentifier WebElement to wait for to display before reading Console tab data
-     * @param level             {@link Level} the level to filter the log entries
-     * @return List of unique Console and Network requests
-     */
-    private LogEntries webDiagnosticsConsoleRequests(final String elementIdentifier, final Level level) {
-
-        waitForBrowserToLoad();
-        waitForElementToDisplay(elementIdentifier);
-
-        Set<String> ignoreSet = new HashSet<>();
-        ignoreSet.add("ignore_me");
-
-        List<LogEntry> allRequests = super.webDiagnosticsConsoleRequests();
-        ignoreSet.forEach(ignoreIt -> allRequests.removeIf(request -> request.getMessage().contains(ignoreIt)));
-
-        LogEntries logEntries = new LogEntries(allRequests);
-        logEntries.filter(level);
-        return logEntries;
     }
 
     /**

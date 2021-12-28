@@ -5,6 +5,7 @@ import com.pwc.core.framework.data.WebElementType;
 import com.pwc.core.framework.util.FileUtils;
 import com.pwc.core.framework.util.JsonUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
@@ -42,7 +43,7 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
     protected Set<String> collectVisibleHrefLinks() {
 
         Set<String> current = new HashSet<>();
-        List<WebElement> anchorElements = webEventController.getWebEventService().getMicroserviceWebDriver().findElementsByTagName(WebElementType.ANCHOR.type);
+        List<WebElement> anchorElements = webEventController.getWebEventService().getMicroserviceWebDriver().findElements(By.xpath(WebElementType.ANCHOR.type));
         for (WebElement link : anchorElements) {
             try {
                 if (link.isDisplayed()) {
