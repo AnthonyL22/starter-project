@@ -67,11 +67,12 @@ public abstract class MyApplicationTestCase extends WebTestCase {
 
     }
 
-    @BeforeMethod(firstTimeOnly = true)
+    @BeforeMethod(alwaysRun = true)
     public void preserveProduction(Method m) {
 
         if (StringUtils.containsIgnoreCase(System.getProperty(FrameworkConstants.AUTOMATION_TEST_ENVIRONMENT), "prod")) {
             List allowedProductionGroups = new ArrayList();
+            allowedProductionGroups.add(Groups.SMOKE_TEST);
             allowedProductionGroups.add(Groups.ACCEPTANCE_TEST);
 
             Test currentTest = m.getAnnotation(Test.class);
