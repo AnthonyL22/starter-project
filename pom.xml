@@ -57,7 +57,7 @@
     <format-maven-plugin.version>2.0.1</format-maven-plugin.version>
     <guava.version>29.0-jre</guava.version>
     <jackson-dataformat-yaml.version>2.3.0</jackson-dataformat-yaml.version>
-    <jackson.version>2.11.3</jackson.version>
+    <jackson.version>2.12.6.1</jackson.version>
     <java.version>1.8</java.version>
     <jazzy.version>0.5.2-rtext-1.4.1-2</jazzy.version>
     <jsoup.version>1.8.2</jsoup.version>
