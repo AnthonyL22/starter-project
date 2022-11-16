@@ -53,6 +53,17 @@ public class TestAutomationStandards {
 
     }
 
+    @Test
+    public void testMissingIssueAnnotationContents() {
+
+        allTestFiles.forEach(testFile -> {
+            List<String> testContents = readClassContents(testFile);
+            boolean foundMissingAnnotationValue = testContents.stream().anyMatch(code -> StringUtils.contains(code, "@Issue(\"\")"));
+            Assert.assertFalse("Missing @Issue contents in test='" + testFile.getName() + "'", foundMissingAnnotationValue);
+        });
+
+    }
+
     @Test()
     public void testNoDoubleSemiColon() {
 
