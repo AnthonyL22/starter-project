@@ -5,12 +5,14 @@ node {
 
     def BITBUCKET_CREDENTIALS_ID = 'sample'
     def BITBUCKET_SOURCE_PROJECT = 'ssh://sample.git'
+    def INTERNAL_SELENIUM_GRID_URL = 'http://MY_SELENIUM_GRID.com:4444'
 
     def mavenProfileToRun = 'smoke'
     def numberOfUsers = '5'
     def DEFAULT_BRANCH_NAME = 'origin/develop'
     def branchName
     boolean hasFailed = false
+    def grid = 'Sauce Labs'
 
     def MAVEN_VERSION = 'Maven 3.3.9'
     def mvnHome = tool name: "${MAVEN_VERSION}", type: 'maven'
@@ -48,6 +50,28 @@ node {
                             ]
                     ]
             )
+
+            try {
+                timeout(time: 20, unit: 'SECONDS') {
+                    grid = input message: 'GRID Selection',
+                            parameters: [[
+                                                 $class      : 'ChoiceParameter',
+                                                 choiceType  : 'PT_RADIO',
+                                                 description : 'Please select an runtime grid',
+                                                 filterLength: 1,
+                                                 filterable  : false,
+                                                 name        : 'grid',
+                                                 script      : [
+                                                         $class        : 'GroovyScript',
+                                                         fallbackScript: [classpath: [], sandbox: false, script: ''],
+                                                         script        : [classpath: [],
+                                                                          sandbox  : true,
+                                                                          script   : "return['Selenium Grid','${grid}']"]
+                                                 ]]]
+                }
+            } catch (Exception e) {
+                echo "Selecting default 'Sauce Labs' grid setting"
+            }
 
             stage('Checkout') {
                 checkout([$class                           : 'GitSCM',
@@ -139,6 +163,29 @@ node {
                   submoduleCfg                     : [],
                   userRemoteConfigs                : [[credentialsId: BITBUCKET_CREDENTIALS_ID, url: BITBUCKET_SOURCE_PROJECT]]
         ])
+    }
+
+    if (grid.contains("Selenium")) {
+        stage('Modify Runtime Grid') {
+            try {
+                HashMap<String, String> gridProperties = readProperties(file: env.WORKSPACE + "/src/test/resources/config/${TEST_ENVIRONMENT}/grid.properties")
+                gridProperties.'grid.hub.url' = INTERNAL_SELENIUM_GRID_URL
+                def gridPropsString = gridProperties.
+                        collect { k, v -> "$k=$v" }
+                        .join("\n")
+                writeFile file: env.WORKSPACE + "/src/test/resources/config/${TEST_ENVIRONMENT}/grid.properties", text: gridPropsString
+
+                HashMap<String, String> automationProperties = readProperties(file: env.WORKSPACE + "/src/test/resources/config/${TEST_ENVIRONMENT}/automation.properties")
+                automationProperties.'saucelabs.accesskey' = ''
+                def automationPropsString = automationProperties.
+                        collect { k, v -> "$k=$v" }
+                        .join("\n")
+                writeFile file: env.WORKSPACE + "/src/test/resources/config/${TEST_ENVIRONMENT}/automation.properties", text: automationPropsString
+            } catch (Exception ex) {
+                println ex.message
+                error("Failed to change runtime grid")
+            }
+        }
     }
 
     stage('Smoke Tests') {
