@@ -550,25 +550,17 @@
         <version>${maven-dependency-plugin.version}</version>
         <executions>
           <execution>
-            <id>unpack</id>
+            <id>install-drivers</id>
             <goals>
-              <goal>unpack</goal>
+              <goal>unpack-dependencies</goal>
             </goals>
             <phase>package</phase>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.pacificwebconsulting.runtime</groupId>
-                  <artifactId>runtime-microservice</artifactId>
-                  <classifier>bin</classifier>
-                  <type>zip</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
+              <includeGroupIds>com.pacificwebconsulting.runtime</includeGroupIds>
+              <includeArtifactIds>runtime-microservice</includeArtifactIds>
               <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+              <type>zip</type>
             </configuration>
           </execution>
           <execution>
