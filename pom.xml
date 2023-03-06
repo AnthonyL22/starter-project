@@ -90,7 +90,7 @@
     <runner-microservice.version>1.0.2</runner-microservice.version>
     <runners>20</runners>
     <runtime-microservice.version>1.0.68</runtime-microservice.version>
-    <selenium-devtools.version>4.7.2</selenium-devtools.version>
+    <selenium-devtools.version>4.8.1</selenium-devtools.version>
     <selenium.version>4.3.0</selenium.version>
     <skip.profile>true</skip.profile>
     <skip.surefire.tests>false</skip.surefire.tests>
@@ -291,7 +291,7 @@
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-devtools-v107</artifactId>
+      <artifactId>selenium-devtools-v110</artifactId>
       <version>${selenium-devtools.version}</version>
     </dependency>
     <dependency>
