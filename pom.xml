@@ -52,7 +52,7 @@
     <bucket4j-core.version>6.2.0</bucket4j-core.version>
     <commons-codec.version>1.9</commons-codec.version>
     <commons-lang3.version>3.4</commons-lang3.version>
-    <commons.io.version>2.4</commons.io.version>
+    <commons.io.version>2.7</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commonsdbcp2.version>2.0</commonsdbcp2.version>
     <core-microservice.version>2.0.109</core-microservice.version>
