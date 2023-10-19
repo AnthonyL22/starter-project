@@ -49,12 +49,12 @@ def check_endponts():
     authentication = {'access_token': result[0],
                       'vds_id': result[1]}
 
-    uri = "https://aws-{0!s}.api.rccl.com/agreement".format(BACKEND_ENV)
+    uri = "https://aws-{0!s}.api.something.com/agreement".format(BACKEND_ENV)
     component_id = 10
     headers = {'appkey': APP_KEY}
     verify_endpoint_headers(uri, component_id, headers, False, "", authentication)
 
-    uri = "https://aws-{0!s}.api.rccl.com/v1/profileBookings/searchAddGetProfileBookings".format(BACKEND_ENV)
+    uri = "https://aws-{0!s}.api.something.com/v1/profileBookings/searchAddGetProfileBookings".format(BACKEND_ENV)
     component_id = 11
     headers = {'appkey': APP_KEY,
                'access-token': authentication['access_token'],

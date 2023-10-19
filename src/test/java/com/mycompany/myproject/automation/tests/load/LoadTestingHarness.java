@@ -18,7 +18,7 @@ public class LoadTestingHarness extends Thread {
     private static final long RAMP_UP_TIME_BETWEEN_USERS_IN_MILLISECONDS = 1000;
     protected static final String TEST_RESULT_FILE = "load_test_results.txt";
 
-    private Thread t;
+    private Thread thread;
     private String threadName;
 
     private LoadTestingHarness(String name) {
@@ -57,9 +57,9 @@ public class LoadTestingHarness extends Thread {
     @Override
     public void start() {
         LOG(true, "Starting Thread named=%s", threadName);
-        if (t == null) {
-            t = new Thread(this, threadName);
-            t.start();
+        if (thread == null) {
+            thread = new Thread(this, threadName);
+            thread.start();
         }
     }
 
@@ -85,7 +85,7 @@ public class LoadTestingHarness extends Thread {
     }
 
     /**
-     * Cleanup performance results file
+     * Cleanup performance results file.
      *
      * @param fileName results file to delete
      */

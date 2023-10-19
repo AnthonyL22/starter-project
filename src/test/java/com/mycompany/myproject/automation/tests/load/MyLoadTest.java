@@ -64,7 +64,7 @@ public class MyLoadTest extends MyApplicationTestCase {
     }
 
     /**
-     * Save a performance statistic to file for later reading by an external user
+     * Save a performance statistic to file for later reading by an external user.
      *
      * @param statistic statistic to store to file
      */

@@ -45,43 +45,38 @@
     <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
     <ant-contrib.version>20020829</ant-contrib.version>
     <appium-java-client.version>7.3.0</appium-java-client.version>
-    <aspectj.version>1.8.10</aspectj.version>
+    <aspectj.version>1.9.20</aspectj.version>
     <assert-microservice.version>1.0.5</assert-microservice.version>
     <axe-selenium.version>4.2.1</axe-selenium.version>
-    <bson.version>2.3</bson.version>
+    <bson.version>2.14.3</bson.version>
     <bucket4j-core.version>6.2.0</bucket4j-core.version>
     <commons-codec.version>1.9</commons-codec.version>
-    <commons-lang3.version>3.4</commons-lang3.version>
-    <commons.io.version>2.4</commons.io.version>
+    <commons-lang3.version>3.13.0</commons-lang3.version>
+    <commons.io.version>2.13.0</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
-    <commonsdbcp2.version>2.0</commonsdbcp2.version>
-    <core-microservice.version>2.0.114</core-microservice.version>
+    <commonsdbcp2.version>2.9.0</commonsdbcp2.version>
+    <core-microservice.version>3.0.1</core-microservice.version>
     <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
+    <findsecbugs.plugin>1.12.0</findsecbugs.plugin>
     <format-maven-plugin.version>2.0.1</format-maven-plugin.version>
-    <google-api-client.version>1.30.10</google-api-client.version>
-    <google-api-services-gmail.version>v1-rev20200713-1.30.10</google-api-services-gmail.version>
-    <google-oauth-client-jetty.version>1.31.0</google-oauth-client-jetty.version>
-    <gson.version>2.8.6</gson.version>
+    <gson.version>2.10.1</gson.version>
     <guava.version>31.0.1-jre</guava.version>
-    <jackson-dataformat-yaml.version>2.3.0</jackson-dataformat-yaml.version>
-    <jackson.version>2.8.1</jackson.version>
-    <java.version>1.8</java.version>
+    <jackson.version>2.15.2</jackson.version>
+    <java.version>11</java.version>
     <jazzy.version>0.5.2-rtext-1.4.1-2</jazzy.version>
-    <jsoup.version>1.8.2</jsoup.version>
+    <jsoup.version>1.16.1</jsoup.version>
     <logging-microservice.version>1.0.9</logging-microservice.version>
-    <lombok.version>1.18.4</lombok.version>
+    <lombok.version>1.18.28</lombok.version>
     <maven-antrun-plugin.version>1.6</maven-antrun-plugin.version>
     <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>2.9</maven-dependency-plugin.version>
     <maven-failsafe-plugin.version>2.19</maven-failsafe-plugin.version>
-    <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.21.0</maven-pmd-plugin.version>
     <maven-resource-plugin.version>2.7</maven-resource-plugin.version>
     <maven-surefire-plugin.version>2.14</maven-surefire-plugin.version>
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
-    <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
-    <mongo-java-driver.version>3.6.3</mongo-java-driver.version>
-    <mysql-connector-java.version>8.0.12</mysql-connector-java.version>
-    <opencsv.version>5.3</opencsv.version>
+    <mongo-java-driver.version>3.12.14</mongo-java-driver.version>
+    <opencsv.version>5.8</opencsv.version>
     <poi-ooxml.version>3.15</poi-ooxml.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <replacer.version>1.5.2</replacer.version>
@@ -89,19 +84,20 @@
     <rewrite-maven-plugin.version>4.39.0</rewrite-maven-plugin.version>
     <runner-microservice.version>1.0.2</runner-microservice.version>
     <runners>20</runners>
-    <runtime-microservice.version>1.0.73</runtime-microservice.version>
-    <selenium-devtools.version>4.9.1</selenium-devtools.version>
-    <selenium.version>4.3.0</selenium.version>
-    <skip.profile>true</skip.profile>
-    <skip.surefire.tests>false</skip.surefire.tests>
-    <slf4j.version>1.7.21</slf4j.version>
+    <runtime-microservice.version>2.0.3</runtime-microservice.version>
+    <selenium-devtools.artifactId>v104</selenium-devtools.artifactId>
+    <selenium.version>4.5.0</selenium.version>
+    <skip.profile>false</skip.profile>
+    <skip.surefire.tests>${skip.profile}</skip.surefire.tests>
+    <slf4j.version>1.7.36</slf4j.version>
     <sortpom-maven-plugin.version>2.6.0</sortpom-maven-plugin.version>
-    <spring.version>4.0.0.RELEASE</spring.version>
+    <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
+    <spring.version>4.2.8.RELEASE</spring.version>
     <sukgu.version>0.0.9</sukgu.version>
     <surefire.junit.version>2.18.1</surefire.junit.version>
     <test.results.default.dir>failsafe-reports</test.results.default.dir>
     <testng.version>6.9.8</testng.version>
-    <webdrivermanager.version>5.0.1</webdrivermanager.version>
+    <webdrivermanager.version>5.4.1</webdrivermanager.version>
   </properties>
   <dependencies>
     <dependency>
@@ -132,22 +128,12 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>${jackson-dataformat-yaml.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.vladimir-bukhtoyarov</groupId>
       <artifactId>bucket4j-core</artifactId>
       <version>${bucket4j-core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>${google-api-client.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-gmail</artifactId>
-      <version>${google-api-services-gmail.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -158,11 +144,6 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.oauth-client</groupId>
-      <artifactId>google-oauth-client-jetty</artifactId>
-      <version>${google-oauth-client-jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>com.jayway.restassured</groupId>
@@ -239,11 +220,6 @@
       <version>${allure-testng.version}</version>
     </dependency>
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>${mysql-connector-java.version}</version>
-    </dependency>
-    <dependency>
       <groupId>net.sf.jazzy</groupId>
       <artifactId>jazzy</artifactId>
       <version>${jazzy.version}</version>
@@ -291,8 +267,18 @@
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-devtools-v113</artifactId>
-      <version>${selenium-devtools.version}</version>
+      <artifactId>selenium-chrome-driver</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-devtools-${selenium-devtools.artifactId}</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-http-jdk-client</artifactId>
+      <version>${selenium.version}</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
@@ -364,22 +350,102 @@
     </repository>
   </repositories>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>net.revelc.code.formatter</groupId>
+          <artifactId>formatter-maven-plugin</artifactId>
+          <version>${format-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>validate</goal>
+              </goals>
+              <phase>verify</phase>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>com.github.ekryd.sortpom</groupId>
+          <artifactId>sortpom-maven-plugin</artifactId>
+          <version>${sortpom-maven-plugin.version}</version>
+          <configuration>
+            <verifyFail>Stop</verifyFail>
+            <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
+            <sortDependencies>scope,groupId,artifactId</sortDependencies>
+            <sortProperties>true</sortProperties>
+            <expandEmptyElements>false</expandEmptyElements>
+            <indentSize>2</indentSize>
+            <createBackupFile>false</createBackupFile>
+          </configuration>
+          <executions>
+            <execution>
+              <id>sortpom-verify</id>
+              <goals>
+                <goal>verify</goal>
+              </goals>
+              <phase>verify</phase>
+            </execution>
+            <execution>
+              <id>sortpom-sort</id>
+              <goals>
+                <goal>sort</goal>
+              </goals>
+              <phase>validate</phase>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.openrewrite.maven</groupId>
+        <artifactId>rewrite-maven-plugin</artifactId>
+        <version>${rewrite-maven-plugin.version}</version>
+        <configuration>
+          <skipMavenParsing>${skip.profile}</skipMavenParsing>
+          <exclusions>
+            <exclude>workers/**</exclude>
+            <exclude>**/pipelines/**</exclude>
+            <exclude>**/assets/**</exclude>
+            <exclude>**/jmeter/**</exclude>
+            <exclude>**/postman/**</exclude>
+            <exclude>**/data/**</exclude>
+            <exclude>**/network-tunnel*</exclude>
+          </exclusions>
+          <activeRecipes>
+            <recipe>org.openrewrite.java.RemoveUnusedImports</recipe>
+            <recipe>org.openrewrite.java.cleanup.RemoveUnusedLocalVariables</recipe>
+          </activeRecipes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>io.qameta.allure</groupId>
         <artifactId>allure-maven</artifactId>
         <version>${allure-maven.version}</version>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${maven.findbugs.plugin.version}</version>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${spotbugs-maven-plugin.version}</version>
         <configuration>
-          <failOnError>true</failOnError>
-          <xmlOutput>true</xmlOutput>
-          <findbugsXmlOutputDirectory>${project.build.directory}/sonar</findbugsXmlOutputDirectory>
-          <xmlOutputDirectory>${project.build.directory}/sonar</xmlOutputDirectory>
-          <outputDirectory>${project.build.directory}/sonar</outputDirectory>
+          <skip>${skip.profile}</skip>
+          <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+          <includeFilterFile>spotbugs-include.xml</includeFilterFile>
+          <plugins>
+            <plugin>
+              <groupId>com.h3xstream.findsecbugs</groupId>
+              <artifactId>findsecbugs-plugin</artifactId>
+              <version>${findsecbugs.plugin}</version>
+            </plugin>
+          </plugins>
         </configuration>
         <executions>
           <execution>
@@ -398,14 +464,14 @@
             <id>pmd-validation</id>
             <goals>
               <goal>pmd</goal>
-              <goal>cpd</goal>
               <goal>check</goal>
-              <goal>cpd-check</goal>
             </goals>
             <phase>verify</phase>
             <configuration>
-              <sourceEncoding>utf-8</sourceEncoding>
-              <minimumTokens>100</minimumTokens>
+              <rulesets>
+                <ruleset>${project.basedir}/code-pmd.xml</ruleset>
+              </rulesets>
+              <skip>${skip.surefire.tests}</skip>
               <targetJdk>${java.version}</targetJdk>
               <outputDirectory>${project.build.directory}/pmd</outputDirectory>
               <targetDirectory>${project.build.directory}/pmd</targetDirectory>
@@ -418,7 +484,8 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${maven.checkstyle.plugin.version}</version>
         <configuration>
-          <configLocation>checkstyle.xml</configLocation>
+          <skip>${skip.surefire.tests}</skip>
+          <configLocation>${project.basedir}/code-checkstyle.xml</configLocation>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
           <failOnViolation>true</failOnViolation>
@@ -428,7 +495,7 @@
           <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
           <outputFile>${basedir}/target/checkstyle/checkstyle-output.xml</outputFile>
           <cacheFile>${basedir}/target/checkstyle/checkstyle-cachefile</cacheFile>
-          <excludes>**/unit/**/*,**/load/**/*,**/resources/*,**/language/*</excludes>
+          <excludes>**/unit/**/*,**/type/mail/**/*,**/resources/*,**/language/*,**/type/customer/*,**/performance/*,**/Mock*</excludes>
         </configuration>
         <executions>
           <execution>
@@ -448,14 +515,16 @@
         <artifactId>formatter-maven-plugin</artifactId>
         <version>${format-maven-plugin.version}</version>
         <configuration>
+          <skip>${skip.surefire.tests}</skip>
           <encoding>UTF-8</encoding>
           <compilerSource>${java.version}</compilerSource>
           <compilerCompliance>${java.version}</compilerCompliance>
           <compilerTargetPlatform>${java.version}</compilerTargetPlatform>
-          <configFile>${project.basedir}/eclipse-java-pwc-style.xml</configFile>
+          <configFile>${project.basedir}/code-formatter.xml</configFile>
           <excludes>
             <exclude>**/frameworksupport/command/**/*.java</exclude>
             <exclude>**/data/enums/**/*.java</exclude>
+            <exclude>**/data/**/Mock.java</exclude>
             <exclude>**/data/provider/*.java</exclude>
           </excludes>
         </configuration>
@@ -550,17 +619,25 @@
         <version>${maven-dependency-plugin.version}</version>
         <executions>
           <execution>
-            <id>install-drivers</id>
+            <id>unpack</id>
             <goals>
-              <goal>unpack-dependencies</goal>
+              <goal>unpack</goal>
             </goals>
             <phase>package</phase>
             <configuration>
-              <includeGroupIds>com.pacificwebconsulting.runtime</includeGroupIds>
-              <includeArtifactIds>runtime-microservice</includeArtifactIds>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.pacificwebconsulting.runtime</groupId>
+                  <artifactId>runtime-microservice</artifactId>
+                  <classifier>bin</classifier>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
               <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-              <overWriteIfNewer>true</overWriteIfNewer>
-              <type>zip</type>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
           <execution>
@@ -813,7 +890,7 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>${exec-maven-plugin.version}</version>
             <configuration>
-              <mainClass>com.rccl.digitalcommerce.cruiseplanner.automation.frameworksupport.ThreadCountMavenHelper</mainClass>
+              <mainClass>com.mycompany.myproject.automation.frameworksupport.ThreadCountMavenHelper</mainClass>
               <arguments>
                 <argument>1</argument>
               </arguments>

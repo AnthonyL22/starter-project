@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Bug pattern="REC_CATCH_EXCEPTION,NP_NULL_INSTANCEOF,RV_EXCEPTION_NOT_THROWN,DMI_RANDOM_USED_ONLY_ONCE,ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD,DM_DEFAULT_ENCODING,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_MUTABLE_ARRAY,DM_EXIT"/>
+    </Match>
+    <Match>
+        <Package name="com.mycompany.myproject.automation.frameworksupport"/>
+    </Match>
+</FindBugsFilter>
