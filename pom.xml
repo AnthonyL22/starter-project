@@ -84,7 +84,7 @@
     <rewrite-maven-plugin.version>4.39.0</rewrite-maven-plugin.version>
     <runner-microservice.version>1.0.2</runner-microservice.version>
     <runners>20</runners>
-    <runtime-microservice.version>2.0.3</runtime-microservice.version>
+    <runtime-microservice.version>2.0.4</runtime-microservice.version>
     <selenium-devtools.artifactId>v104</selenium-devtools.artifactId>
     <selenium.version>4.5.0</selenium.version>
     <skip.profile>false</skip.profile>
