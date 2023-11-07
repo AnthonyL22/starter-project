@@ -55,7 +55,7 @@
     <commons.io.version>2.13.0</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commonsdbcp2.version>2.9.0</commonsdbcp2.version>
-    <core-microservice.version>3.0.1</core-microservice.version>
+    <core-microservice.version>3.0.2</core-microservice.version>
     <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
     <findsecbugs.plugin>1.12.0</findsecbugs.plugin>
     <format-maven-plugin.version>2.0.1</format-maven-plugin.version>
@@ -84,9 +84,8 @@
     <rewrite-maven-plugin.version>4.39.0</rewrite-maven-plugin.version>
     <runner-microservice.version>1.0.2</runner-microservice.version>
     <runners>20</runners>
-    <runtime-microservice.version>2.0.4</runtime-microservice.version>
-    <selenium-devtools.artifactId>v104</selenium-devtools.artifactId>
-    <selenium.version>4.5.0</selenium.version>
+    <selenium-devtools.artifactId>v119</selenium-devtools.artifactId>
+    <selenium.version>4.15.0</selenium.version>
     <skip.profile>false</skip.profile>
     <skip.surefire.tests>${skip.profile}</skip.surefire.tests>
     <slf4j.version>1.7.36</slf4j.version>
@@ -171,13 +170,6 @@
       <groupId>com.pacificwebconsulting.runner</groupId>
       <artifactId>runner-microservice</artifactId>
       <version>${runner-microservice.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.pacificwebconsulting.runtime</groupId>
-      <artifactId>runtime-microservice</artifactId>
-      <version>${runtime-microservice.version}</version>
-      <classifier>bin</classifier>
-      <type>zip</type>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -268,11 +260,6 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-devtools-${selenium-devtools.artifactId}</artifactId>
-      <version>${selenium.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-http-jdk-client</artifactId>
       <version>${selenium.version}</version>
     </dependency>
     <dependency>
@@ -604,46 +591,6 @@
               <includes>
                 <include>**/unit/*Standards.java</include>
               </includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>${maven-dependency-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.pacificwebconsulting.runtime</groupId>
-                  <artifactId>runtime-microservice</artifactId>
-                  <classifier>bin</classifier>
-                  <type>zip</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-runner-dependency</id>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <phase>install</phase>
-            <configuration>
-              <includeArtifactIds>automation-runner</includeArtifactIds>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
             </configuration>
           </execution>
         </executions>
