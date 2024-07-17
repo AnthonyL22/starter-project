@@ -84,7 +84,7 @@
     <rewrite-maven-plugin.version>4.39.0</rewrite-maven-plugin.version>
     <runner-microservice.version>1.0.2</runner-microservice.version>
     <runners>20</runners>
-    <selenium-devtools.artifactId>v126</selenium-devtools.artifactId>
+    <selenium-devtools.artifactId>v122</selenium-devtools.artifactId>
     <selenium.version>4.19.1</selenium.version>
     <skip.profile>false</skip.profile>
     <skip.surefire.tests>${skip.profile}</skip.surefire.tests>
