@@ -44,7 +44,7 @@
     <allure-testng.version>2.12.1</allure-testng.version>
     <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
     <ant-contrib.version>20020829</ant-contrib.version>
-    <appium-java-client.version>7.3.0</appium-java-client.version>
+    <appium-java-client.version>9.3.0</appium-java-client.version>
     <aspectj.version>1.9.20</aspectj.version>
     <assert-microservice.version>1.0.5</assert-microservice.version>
     <axe-selenium.version>4.2.1</axe-selenium.version>
@@ -55,7 +55,7 @@
     <commons.io.version>2.13.0</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commonsdbcp2.version>2.9.0</commonsdbcp2.version>
-    <core-microservice.version>3.0.6-SNAPSHOT</core-microservice.version>
+    <core-microservice.version>3.0.5</core-microservice.version>
     <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
     <findsecbugs.plugin>1.12.0</findsecbugs.plugin>
     <format-maven-plugin.version>2.0.1</format-maven-plugin.version>
@@ -96,7 +96,7 @@
     <surefire.junit.version>2.18.1</surefire.junit.version>
     <test.results.default.dir>failsafe-reports</test.results.default.dir>
     <testng.version>6.9.8</testng.version>
-    <webdrivermanager.version>5.4.1</webdrivermanager.version>
+    <webdrivermanager.version>5.9.2</webdrivermanager.version>
   </properties>
   <dependencies>
     <dependency>
