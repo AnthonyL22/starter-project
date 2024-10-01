@@ -1,13 +1,12 @@
 package com.mycompany.myproject.automation.tests.api;
 
-import com.jayway.restassured.path.json.JsonPath;
 import com.mycompany.myproject.automation.data.Constants;
 import com.mycompany.myproject.automation.frameworksupport.Groups;
 import com.mycompany.myproject.automation.frameworksupport.MyApplicationTestCase;
 import com.mycompany.myproject.automation.frameworksupport.command.webservice.WebServiceCommand;
 import com.pwc.core.framework.FrameworkConstants;
 import com.pwc.core.framework.annotations.MaxRetryCount;
-import com.pwc.core.framework.listeners.Retry;
+import org.json.JSONObject;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -38,18 +37,18 @@ public class BasicRestTest extends MyApplicationTestCase {
     }
 
     @MaxRetryCount(1)
-    @Test(retryAnalyzer = Retry.class, groups = {Groups.ACCEPTANCE_TEST})
+    @Test(groups = {Groups.ACCEPTANCE_TEST})
     public void testBasicRest() {
 
         FEATURE("Webservice-Based Feature Under Test");
         SCENARIO("Scenario Being Tested Here");
 
         GIVEN("I can query a public REST service");
-        JsonPath response = (JsonPath) webServiceAction(WebServiceCommand.GET_LIST_ALL_BREEDS);
+        JSONObject response = (JSONObject) webServiceAction(WebServiceCommand.GET_LIST_ALL_BREEDS);
 
         WHEN("I verify the REST results");
-        JsonPath entity = new JsonPath(response.get(FrameworkConstants.HTTP_ENTITY_KEY).toString());
-        HashMap dogBreeds = entity.get("message");
+        JSONObject entity = new JSONObject(response.get(FrameworkConstants.HTTP_ENTITY_KEY).toString());
+        HashMap<String, Object> dogBreeds = convertJsonToHashMap(entity);
 
         THEN("The REST service responds correctly");
         assertGreaterThan("All Dog Breeds are returned", dogBreeds.size(), 0);

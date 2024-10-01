@@ -1,5 +1,8 @@
 package com.mycompany.myproject.automation.frameworksupport;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.path.json.JsonPath;
 import com.mycompany.myproject.automation.data.Constants;
 import com.mycompany.myproject.automation.data.enums.TestingUserQueue;
@@ -12,6 +15,7 @@ import com.pwc.core.framework.util.PropertiesUtils;
 import com.pwc.logging.helper.LoggerHelper;
 import com.pwc.logging.service.VideoLoggerService;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.jsoup.Jsoup;
@@ -42,6 +46,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
@@ -100,6 +105,21 @@ public abstract class MyApplicationTestCase extends WebTestCase {
             videoLoggerService.setOutputMovieFileName(testName + ".mov");
             videoLoggerService.convert();
         }
+    }
+
+    /**
+     * Convert a given JSONObject response to a HashMap.
+     * @param entity response
+     * @return a HashMap
+     */
+    protected static HashMap<String, Object> convertJsonToHashMap(JSONObject entity) {
+        HashMap<String, Object> entityMap;
+        try {
+            entityMap = (HashMap<String, Object>) new ObjectMapper().readValue(entity.get("message").toString(), new TypeReference<Map<String, Object>>() {});
+        } catch (JsonProcessingException | JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return entityMap;
     }
 
     /**
