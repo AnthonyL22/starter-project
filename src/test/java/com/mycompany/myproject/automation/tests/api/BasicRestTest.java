@@ -48,7 +48,7 @@ public class BasicRestTest extends MyApplicationTestCase {
 
         WHEN("I verify the REST results");
         JSONObject entity = new JSONObject(response.get(FrameworkConstants.HTTP_ENTITY_KEY).toString());
-        HashMap<String, Object> dogBreeds = convertJsonToHashMap(entity);
+        HashMap<String, Object> dogBreeds = convertJsonToHashMap(entity, "message");
 
         THEN("The REST service responds correctly");
         assertGreaterThan("All Dog Breeds are returned", dogBreeds.size(), 0);
