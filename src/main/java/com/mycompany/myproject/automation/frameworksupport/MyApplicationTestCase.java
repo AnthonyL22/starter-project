@@ -3,7 +3,6 @@ package com.mycompany.myproject.automation.frameworksupport;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.restassured.path.json.JsonPath;
 import com.mycompany.myproject.automation.data.Constants;
 import com.mycompany.myproject.automation.data.enums.TestingUserQueue;
 import com.mycompany.myproject.automation.frameworksupport.type.Account;
@@ -112,10 +111,10 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      * @param entity response
      * @return a HashMap
      */
-    protected static HashMap<String, Object> convertJsonToHashMap(JSONObject entity) {
+    protected static HashMap<String, Object> convertJsonToHashMap(JSONObject entity, String field) {
         HashMap<String, Object> entityMap;
         try {
-            entityMap = (HashMap<String, Object>) new ObjectMapper().readValue(entity.get("message").toString(), new TypeReference<Map<String, Object>>() {});
+            entityMap = (HashMap<String, Object>) new ObjectMapper().readValue(entity.get(field).toString(), new TypeReference<Map<String, Object>>() {});
         } catch (JsonProcessingException | JSONException e) {
             throw new RuntimeException(e);
         }
@@ -164,8 +163,8 @@ public abstract class MyApplicationTestCase extends WebTestCase {
     protected Set<String> getURLsFromSitemap(final String siteMapUrl) {
 
         Set<String> urlSet = new HashSet<>();
-        JsonPath jsonObject = convertXmlToJson(siteMapUrl);
-        HashMap urlSetMap = jsonObject.get("urlset");
+        JSONObject jsonObject = convertXmlToJson(siteMapUrl);
+        HashMap urlSetMap = convertJsonToHashMap(jsonObject, "urlSet");
         List<HashMap> allURLs = (List) urlSetMap.get("url");
         allURLs.forEach(eachUrl -> {
             urlSet.add((String) eachUrl.get("loc"));
@@ -202,9 +201,9 @@ public abstract class MyApplicationTestCase extends WebTestCase {
      *
      * @return JSON representation of XML from WEB api
      */
-    private static JsonPath convertXmlToJson(final String baseUrl) {
+    private static JSONObject convertXmlToJson(final String baseUrl) {
 
-        JsonPath jsonObject = null;
+        JSONObject jsonObject = null;
 
         try {
 
@@ -222,7 +221,7 @@ public abstract class MyApplicationTestCase extends WebTestCase {
             transformer.transform(domSource, result);
 
             JSONObject json = XML.toJSONObject(writer.toString());
-            jsonObject = new JsonPath(json.toString());
+            jsonObject = new JSONObject(json.toString());
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,7 +1,5 @@
 package com.mycompany.myproject.automation.frameworksupport;
 
-import com.pwc.core.framework.data.WebElementAttribute;
-import com.pwc.core.framework.data.WebElementType;
 import com.pwc.core.framework.util.FileUtils;
 import com.pwc.core.framework.util.JsonUtils;
 import org.apache.commons.lang.StringUtils;
@@ -43,11 +41,11 @@ public abstract class MachineLearningTestCase extends MyApplicationTestCase {
     protected Set<String> collectVisibleHrefLinks() {
 
         Set<String> current = new HashSet<>();
-        List<WebElement> anchorElements = webEventController.getWebEventService().getMicroserviceWebDriver().findElements(By.xpath(WebElementType.ANCHOR.type));
+        List<WebElement> anchorElements = webEventController.getWebEventService().getMicroserviceWebDriver().findElements(By.xpath("a"));
         for (WebElement link : anchorElements) {
             try {
                 if (link.isDisplayed()) {
-                    current.add(link.getAttribute(WebElementAttribute.HREF.attribute));
+                    current.add(link.getAttribute("href"));
                 }
             } catch (Exception e) {
                 LOG(true, "Message='%s'", e);
